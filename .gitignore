@@ -1,0 +1,46 @@
+# =========================
+# Backend (Spring Boot)
+# =========================
+backend/target/
+backend/*.jar
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/mvnw
+backend/mvnw.cmd
+
+# =========================
+# Frontend (React/Vite)
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+
+# =========================
+# IDE / Editor
+# =========================
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Secrets / Environment
+# =========================
+*.env
+.env.*
+application-prod.properties
+
+# =========================
+# Old folders (to be deleted)
+# =========================
+placement-frontend/
+Student-Placement-Management/
