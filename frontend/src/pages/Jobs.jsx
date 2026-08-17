@@ -23,43 +23,58 @@ const Jobs = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Available Jobs</h1>
-
-      {loading && <p>Loading available jobs...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {!loading && !error && jobs.length === 0 && (
-        <p>No jobs available at the moment.</p>
-      )}
-
-      <div>
-        {jobs.map((job) => (
-          <div
-            key={job.id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              padding: '16px',
-              marginBottom: '16px',
-              maxWidth: '400px',
-            }}
-          >
-            <h3>{job.title}</h3>
-            <p><strong>Company:</strong> {job.company?.companyName || job.company || 'N/A'}</p>
-            <p><strong>Location:</strong> {job.location || 'N/A'}</p>
-            <p><strong>Salary:</strong> {job.salary ? `₹${Number(job.salary).toLocaleString('en-IN')}` : 'Not Disclosed'}</p>
-            <Link to={`/student/jobs/${job.id}`}>
-              <button>View Details</button>
-            </Link>
+    <div className="page-container">
+      <div className="center-card" style={{ maxWidth: '900px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid #334155', paddingBottom: '16px' }}>
+          <div>
+            <h1 style={{ margin: 0 }}>💼 Available Jobs</h1>
+            <p style={{ margin: '4px 0 0 0' }}>Explore opportunities and apply</p>
           </div>
-        ))}
-      </div>
+          <Link to="/student/dashboard">
+            <button style={{ backgroundColor: '#475569', fontSize: '13px' }}>← Dashboard</button>
+          </Link>
+        </div>
 
-      <br />
-      <Link to="/student/dashboard">
-        <button>Back to Dashboard</button>
-      </Link>
+        {loading && <p>Loading available jobs...</p>}
+        {error && <p style={{ color: '#f87171' }}>{error}</p>}
+
+        {!loading && !error && jobs.length === 0 && (
+          <p style={{ textAlign: 'center', padding: '30px 0' }}>No jobs available at the moment.</p>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+          {jobs.map((job) => (
+            <div
+              key={job.id}
+              style={{
+                backgroundColor: '#0f172a',
+                border: '1px solid #334155',
+                borderRadius: '12px',
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <h3 style={{ margin: '0 0 8px 0', color: '#f8fafc', fontSize: '18px' }}>{job.title}</h3>
+                <p style={{ margin: '0 0 4px 0', color: '#94a3b8', fontSize: '13px' }}>
+                  🏢 {job.company?.companyName || job.company || 'N/A'}
+                </p>
+                <p style={{ margin: '0 0 4px 0', color: '#94a3b8', fontSize: '13px' }}>
+                  📍 {job.location || 'N/A'}
+                </p>
+                <p style={{ margin: '0 0 16px 0', color: '#34d399', fontSize: '14px', fontWeight: '600' }}>
+                  💰 {job.salary ? `₹${Number(job.salary).toLocaleString('en-IN')}` : 'Not Disclosed'}
+                </p>
+              </div>
+              <Link to={`/student/jobs/${job.id}`} style={{ textDecoration: 'none' }}>
+                <button style={{ width: '100%' }}>View Details</button>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
