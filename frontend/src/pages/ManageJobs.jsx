@@ -121,7 +121,8 @@ const ManageJobs = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -131,40 +132,50 @@ const ManageJobs = () => {
         >
           <div
             style={{
-              backgroundColor: '#fff',
-              padding: '25px',
-              borderRadius: '8px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #334155',
+              padding: '28px',
+              borderRadius: '12px',
               maxWidth: '550px',
               width: '90%',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.7)',
               position: 'relative',
+              color: '#f8fafc',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 style={{ marginTop: 0, borderBottom: '2px solid #007bff', paddingBottom: '10px' }}>
-              Job Details: {selectedJob.title}
-            </h2>
-
-            <div style={{ lineHeight: '1.8', fontSize: '15px' }}>
-              <p><strong>Job ID:</strong> #{selectedJob.id}</p>
-              <p><strong>Company:</strong> {selectedJob.company?.companyName || selectedJob.company?.name || selectedJob.company || 'N/A'}</p>
-              <p><strong>Location:</strong> {selectedJob.location}</p>
-              <p><strong>Job Type:</strong> {selectedJob.jobType}</p>
-              <p><strong>Salary / CTC:</strong> ₹{selectedJob.salary ? Number(selectedJob.salary).toLocaleString('en-IN') : 'N/A'}</p>
-              <p><strong>Minimum CGPA:</strong> {selectedJob.minimumCgpa}</p>
-              <p><strong>Deadline:</strong> {selectedJob.deadline}</p>
-              <p><strong>Description:</strong> {selectedJob.description || 'No description provided'}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '12px', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', color: '#f8fafc' }}>
+                Job Details: {selectedJob.title}
+              </h2>
+              <button
+                onClick={() => setSelectedJob(null)}
+                style={{ backgroundColor: '#334155', padding: '4px 10px', fontSize: '13px', color: '#cbd5e1' }}
+              >
+                ✕
+              </button>
             </div>
 
-            <div style={{ marginTop: '20px', textAlign: 'right' }}>
+            <div style={{ lineHeight: '1.9', fontSize: '14px', color: '#cbd5e1' }}>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Job ID:</strong> #{selectedJob.id}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Company:</strong> {selectedJob.company?.companyName || selectedJob.company?.name || selectedJob.company || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Location:</strong> 📍 {selectedJob.location}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Job Type:</strong> <span style={{ color: '#38bdf8' }}>{selectedJob.jobType}</span></p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Salary / CTC:</strong> <span style={{ color: '#34d399', fontWeight: 'bold' }}>₹{selectedJob.salary ? Number(selectedJob.salary).toLocaleString('en-IN') : 'N/A'}</span></p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Minimum CGPA:</strong> {selectedJob.minimumCgpa}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Deadline:</strong> {selectedJob.deadline}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Description:</strong> {selectedJob.description || 'No description provided'}</p>
+            </div>
+
+            <div style={{ marginTop: '24px', textAlign: 'right' }}>
               <button
                 onClick={() => setSelectedJob(null)}
                 style={{
-                  padding: '8px 18px',
-                  backgroundColor: '#6c757d',
+                  padding: '8px 20px',
+                  backgroundColor: '#475569',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   fontSize: '14px',
                 }}

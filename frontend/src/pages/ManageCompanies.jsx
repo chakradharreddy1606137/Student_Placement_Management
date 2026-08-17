@@ -108,7 +108,8 @@ const ManageCompanies = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -118,44 +119,54 @@ const ManageCompanies = () => {
         >
           <div
             style={{
-              backgroundColor: '#fff',
-              padding: '25px',
-              borderRadius: '8px',
-              maxWidth: '500px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #334155',
+              padding: '28px',
+              borderRadius: '12px',
+              maxWidth: '520px',
               width: '90%',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.7)',
               position: 'relative',
+              color: '#f8fafc',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 style={{ marginTop: 0, borderBottom: '2px solid #007bff', paddingBottom: '10px' }}>
-              Company Details (ID: #{selectedCompany.id})
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '12px', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', color: '#f8fafc' }}>
+                Company Details (ID: #{selectedCompany.id})
+              </h2>
+              <button
+                onClick={() => setSelectedCompany(null)}
+                style={{ backgroundColor: '#334155', padding: '4px 10px', fontSize: '13px', color: '#cbd5e1' }}
+              >
+                ✕
+              </button>
+            </div>
 
-            <div style={{ lineHeight: '1.8', fontSize: '15px' }}>
-              <p><strong>Company Name:</strong> {selectedCompany.companyName || selectedCompany.name || 'N/A'}</p>
-              <p><strong>Contact Email:</strong> {selectedCompany.user?.email || selectedCompany.email || 'N/A'}</p>
-              <p><strong>Location:</strong> {selectedCompany.location || 'N/A'}</p>
-              <p>
-                <strong>Website:</strong>{' '}
+            <div style={{ lineHeight: '1.9', fontSize: '14px', color: '#cbd5e1' }}>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Company Name:</strong> {selectedCompany.companyName || selectedCompany.name || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Contact Email:</strong> {selectedCompany.user?.email || selectedCompany.email || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Location:</strong> {selectedCompany.location || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}>
+                <strong style={{ color: '#f8fafc' }}>Website:</strong>{' '}
                 {selectedCompany.website ? (
-                  <a href={selectedCompany.website.startsWith('http') ? selectedCompany.website : `https://${selectedCompany.website}`} target="_blank" rel="noreferrer" style={{ color: '#007bff' }}>
-                    {selectedCompany.website}
+                  <a href={selectedCompany.website.startsWith('http') ? selectedCompany.website : `https://${selectedCompany.website}`} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>
+                    🌐 {selectedCompany.website}
                   </a>
                 ) : 'N/A'}
               </p>
-              <p><strong>Description:</strong> {selectedCompany.description || 'No description provided'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Description:</strong> {selectedCompany.description || 'No description provided'}</p>
             </div>
 
-            <div style={{ marginTop: '20px', textAlign: 'right' }}>
+            <div style={{ marginTop: '24px', textAlign: 'right' }}>
               <button
                 onClick={() => setSelectedCompany(null)}
                 style={{
-                  padding: '8px 18px',
-                  backgroundColor: '#6c757d',
+                  padding: '8px 20px',
+                  backgroundColor: '#475569',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   fontSize: '14px',
                 }}

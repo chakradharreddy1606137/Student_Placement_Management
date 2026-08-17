@@ -104,7 +104,8 @@ const ManageStudents = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -114,56 +115,59 @@ const ManageStudents = () => {
         >
           <div
             style={{
-              backgroundColor: '#fff',
-              padding: '25px',
-              borderRadius: '8px',
-              maxWidth: '500px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #334155',
+              padding: '28px',
+              borderRadius: '12px',
+              maxWidth: '520px',
               width: '90%',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.7)',
               position: 'relative',
+              color: '#f8fafc',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 style={{ marginTop: 0, borderBottom: '2px solid #007bff', paddingBottom: '10px' }}>
-              Student Details (ID: #{selectedStudent.id})
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '12px', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', color: '#f8fafc' }}>
+                Student Details (ID: #{selectedStudent.id})
+              </h2>
+              <button
+                onClick={() => setSelectedStudent(null)}
+                style={{ backgroundColor: '#334155', padding: '4px 10px', fontSize: '13px', color: '#cbd5e1' }}
+              >
+                ✕
+              </button>
+            </div>
 
-            <div style={{ lineHeight: '1.8', fontSize: '15px' }}>
-              <p><strong>Name:</strong> {selectedStudent.user?.name || selectedStudent.name || 'N/A'}</p>
-              <p><strong>Email:</strong> {selectedStudent.user?.email || selectedStudent.email || 'N/A'}</p>
-              <p><strong>Phone:</strong> {selectedStudent.phone || 'N/A'}</p>
-              <p><strong>College:</strong> {selectedStudent.college || 'N/A'}</p>
-              <p><strong>Degree:</strong> {selectedStudent.degree || 'N/A'}</p>
-              <p><strong>Branch:</strong> {selectedStudent.branch || 'N/A'}</p>
-              <p><strong>Graduation Year:</strong> {selectedStudent.graduationYear || 'N/A'}</p>
-              <p><strong>CGPA:</strong> {selectedStudent.cgpa != null ? selectedStudent.cgpa : 'N/A'}</p>
-              <p>
-                <strong>Resume:</strong>{' '}
+            <div style={{ lineHeight: '1.9', fontSize: '14px', color: '#cbd5e1' }}>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Name:</strong> {selectedStudent.user?.name || selectedStudent.name || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Email:</strong> {selectedStudent.user?.email || selectedStudent.email || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Phone:</strong> {selectedStudent.phone || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>College:</strong> {selectedStudent.college || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Degree & Branch:</strong> {selectedStudent.degree || ''} {selectedStudent.branch ? `- ${selectedStudent.branch}` : ''}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Graduation Year:</strong> {selectedStudent.graduationYear || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>CGPA:</strong> <span style={{ color: '#34d399', fontWeight: 'bold' }}>{selectedStudent.cgpa != null ? selectedStudent.cgpa : 'N/A'}</span></p>
+              <p style={{ margin: '6px 0' }}>
+                <strong style={{ color: '#f8fafc' }}>Resume:</strong>{' '}
                 {selectedStudent.resumeUrl ? (
-                  <a href={selectedStudent.resumeUrl} target="_blank" rel="noreferrer" style={{ color: '#007bff' }}>
-                    View Resume
+                  <a href={selectedStudent.resumeUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>
+                    📄 View Resume
                   </a>
                 ) : (
                   'Not uploaded'
                 )}
               </p>
-              <p>
-                <strong>Skills:</strong>{' '}
-                {selectedStudent.skills && selectedStudent.skills.length > 0
-                  ? Array.from(selectedStudent.skills).map((s) => s.name || s).join(', ')
-                  : 'None'}
-              </p>
             </div>
 
-            <div style={{ marginTop: '20px', textAlign: 'right' }}>
+            <div style={{ marginTop: '24px', textAlign: 'right' }}>
               <button
                 onClick={() => setSelectedStudent(null)}
                 style={{
-                  padding: '8px 18px',
-                  backgroundColor: '#6c757d',
+                  padding: '8px 20px',
+                  backgroundColor: '#475569',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   fontSize: '14px',
                 }}

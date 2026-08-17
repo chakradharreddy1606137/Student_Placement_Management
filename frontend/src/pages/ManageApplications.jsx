@@ -139,7 +139,8 @@ const ManageApplications = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(4px)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -149,44 +150,74 @@ const ManageApplications = () => {
         >
           <div
             style={{
-              backgroundColor: '#fff',
-              padding: '25px',
-              borderRadius: '8px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #334155',
+              padding: '28px',
+              borderRadius: '12px',
               maxWidth: '550px',
               width: '90%',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.7)',
               position: 'relative',
+              color: '#f8fafc',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 style={{ marginTop: 0, borderBottom: '2px solid #007bff', paddingBottom: '10px' }}>
-              Application Details (ID: #{selectedApp.id})
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '12px', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '20px', color: '#f8fafc' }}>
+                Application Details (ID: #{selectedApp.id})
+              </h2>
+              <button
+                onClick={() => setSelectedApp(null)}
+                style={{ backgroundColor: '#334155', padding: '4px 10px', fontSize: '13px', color: '#cbd5e1' }}
+              >
+                ✕
+              </button>
+            </div>
 
-            <div style={{ lineHeight: '1.8', fontSize: '15px' }}>
-              <p><strong>Student:</strong> {selectedApp.student?.user?.name || selectedApp.student?.name || selectedApp.studentName || 'N/A'}</p>
-              <p><strong>Student Email:</strong> {selectedApp.student?.user?.email || selectedApp.student?.email || 'N/A'}</p>
-              <p><strong>Student CGPA:</strong> {selectedApp.student?.cgpa ?? 'N/A'}</p>
-              <p><strong>Job Applied:</strong> {selectedApp.job?.title || selectedApp.job || 'N/A'}</p>
-              <p><strong>Company:</strong> {selectedApp.job?.company?.companyName || selectedApp.job?.company?.name || selectedApp.company || 'N/A'}</p>
-              <p><strong>Applied Date:</strong> {selectedApp.appliedDate || (selectedApp.appliedAt ? new Date(selectedApp.appliedAt).toLocaleDateString() : 'N/A')}</p>
-              <p>
-                <strong>Status:</strong>{' '}
-                <span style={{ color: getStatusColor(selectedApp.status), fontWeight: 'bold' }}>
+            <div style={{ lineHeight: '1.9', fontSize: '14px', color: '#cbd5e1' }}>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Student:</strong> {selectedApp.student?.user?.name || selectedApp.student?.name || selectedApp.studentName || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Student Email:</strong> {selectedApp.student?.user?.email || selectedApp.student?.email || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Student CGPA:</strong> {selectedApp.student?.cgpa ?? 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Job Applied:</strong> <span style={{ color: '#38bdf8' }}>{selectedApp.job?.title || selectedApp.job || 'N/A'}</span></p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Company:</strong> {selectedApp.job?.company?.companyName || selectedApp.job?.company?.name || selectedApp.company || 'N/A'}</p>
+              <p style={{ margin: '6px 0' }}><strong style={{ color: '#f8fafc' }}>Applied Date:</strong> {selectedApp.appliedDate || (selectedApp.appliedAt ? new Date(selectedApp.appliedAt).toLocaleDateString() : 'N/A')}</p>
+              <p style={{ margin: '6px 0' }}>
+                <strong style={{ color: '#f8fafc' }}>Status:</strong>{' '}
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    backgroundColor:
+                      selectedApp.status?.toUpperCase() === 'ACCEPTED' || selectedApp.status?.toUpperCase() === 'SELECTED'
+                        ? 'rgba(16, 185, 129, 0.2)'
+                        : selectedApp.status?.toUpperCase() === 'REJECTED'
+                        ? 'rgba(239, 68, 68, 0.2)'
+                        : 'rgba(245, 158, 11, 0.2)',
+                    color:
+                      selectedApp.status?.toUpperCase() === 'ACCEPTED' || selectedApp.status?.toUpperCase() === 'SELECTED'
+                        ? '#34d399'
+                        : selectedApp.status?.toUpperCase() === 'REJECTED'
+                        ? '#f87171'
+                        : '#fbbf24',
+                  }}
+                >
                   {selectedApp.status}
                 </span>
               </p>
             </div>
 
-            <div style={{ marginTop: '20px', textAlign: 'right' }}>
+            <div style={{ marginTop: '24px', textAlign: 'right' }}>
               <button
                 onClick={() => setSelectedApp(null)}
                 style={{
-                  padding: '8px 18px',
-                  backgroundColor: '#6c757d',
+                  padding: '8px 20px',
+                  backgroundColor: '#475569',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   fontSize: '14px',
                 }}
