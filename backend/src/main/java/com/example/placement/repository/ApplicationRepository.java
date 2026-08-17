@@ -12,13 +12,21 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     boolean existsByStudentIdAndJobId(Long studentId, Long jobId);
 
-    @Transactional
-    @Modifying
-    void deleteByStudentId(Long studentId);
+    @Query("SELECT a FROM Application a WHERE a.student.id = :studentId")
+    List<Application> findByStudentId(@Param("studentId") Long studentId);
+
+    @Query("SELECT a FROM Application a WHERE a.job.id = :jobId")
+    List<Application> findByJobId(@Param("jobId") Long jobId);
 
     @Transactional
-    @Modifying
-    void deleteByJobId(Long jobId);
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM Application a WHERE a.student.id = :studentId")
+    void deleteByStudentId(@Param("studentId") Long studentId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM Application a WHERE a.job.id = :jobId")
+    void deleteByJobId(@Param("jobId") Long jobId);
 
     @Query("""
         SELECT a

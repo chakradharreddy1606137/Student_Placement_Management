@@ -45,8 +45,15 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(Long id) {
-        applicationRepository.deleteByStudentId(id);
-        studentRepository.deleteById(id);
+        studentRepository.findById(id).ifPresent(student -> {
+            var apps = applicationRepository.findByStudentId(id);
+            if (!apps.isEmpty()) {
+                applicationRepository.deleteAllInBatch(apps);
+            }
+            student.getSkills().clear();
+            studentRepository.saveAndFlush(student);
+            studentRepository.delete(student);
+        });
     }
 }
 

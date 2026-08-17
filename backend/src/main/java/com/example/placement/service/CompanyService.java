@@ -45,12 +45,19 @@ public class CompanyService {
 
     @Transactional
     public void deleteCompany(Long id) {
-        List<Job> jobs = jobRepository.findByCompanyId(id);
-        for (Job job : jobs) {
-            applicationRepository.deleteByJobId(job.getId());
-            jobRepository.delete(job);
-        }
-        companyRepository.deleteById(id);
+        companyRepository.findById(id).ifPresent(company -> {
+            var jobs = jobRepository.findByCompanyId(id);
+            for (var job : jobs) {
+                var apps = applicationRepository.findByJobId(job.getId());
+                if (!apps.isEmpty()) {
+                    applicationRepository.deleteAllInBatch(apps);
+                }
+                job.getSkills().clear();
+                jobRepository.saveAndFlush(job);
+                jobRepository.delete(job);
+            }
+            companyRepository.delete(company);
+        });
     }
 }
 

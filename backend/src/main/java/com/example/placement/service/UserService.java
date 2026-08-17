@@ -1,9 +1,12 @@
 package com.example.placement.service;
 
 import com.example.placement.model.User;
+import com.example.placement.repository.CompanyRepository;
+import com.example.placement.repository.StudentRepository;
 import com.example.placement.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,11 +15,23 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
+    private final CompanyRepository companyRepository;
+    private final StudentService studentService;
+    private final CompanyService companyService;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
+                       StudentRepository studentRepository,
+                       CompanyRepository companyRepository,
+                       StudentService studentService,
+                       CompanyService companyService,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
+        this.companyRepository = companyRepository;
+        this.studentService = studentService;
+        this.companyService = companyService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -41,7 +56,11 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
+        studentRepository.findByUserId(id).ifPresent(s -> studentService.deleteStudent(s.getId()));
+        companyRepository.findByUserId(id).ifPresent(c -> companyService.deleteCompany(c.getId()));
         userRepository.deleteById(id);
     }
 }
+

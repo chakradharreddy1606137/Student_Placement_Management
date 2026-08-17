@@ -55,7 +55,7 @@ public class User {
         this.email = email;
     }
 
-@JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     public String getPassword() {
         return password;
     }

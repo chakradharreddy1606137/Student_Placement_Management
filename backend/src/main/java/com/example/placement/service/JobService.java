@@ -47,8 +47,15 @@ public class JobService {
 
     @Transactional
     public void deleteJob(Long id) {
-        applicationRepository.deleteByJobId(id);
-        jobRepository.deleteById(id);
+        jobRepository.findById(id).ifPresent(job -> {
+            var apps = applicationRepository.findByJobId(id);
+            if (!apps.isEmpty()) {
+                applicationRepository.deleteAllInBatch(apps);
+            }
+            job.getSkills().clear();
+            jobRepository.saveAndFlush(job);
+            jobRepository.delete(job);
+        });
     }
 }
 
