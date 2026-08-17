@@ -53,4 +53,11 @@ public class AuthService {
                 token
         );
     }
+
+    public void updatePassword(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+        user.setPassword(passwordEncoder.encode(rawPassword));
+        userRepository.save(user);
+    }
 }
