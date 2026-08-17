@@ -72,49 +72,81 @@ const ApplyJob = () => {
   };
 
   if (loading) {
-    return <p>Loading job details...</p>;
+    return (
+      <div className="page-container">
+        <div className="center-card" style={{ textAlign: 'center', maxWidth: '600px' }}>
+          <p>Loading application form...</p>
+        </div>
+      </div>
+    );
   }
 
   const companyName = job?.company?.companyName || job?.company || 'N/A';
 
   return (
-    <div>
-      <h1>Apply for Job</h1>
-
-      {job && (
-        <>
-          <h2>{job.title}</h2>
-          <p><strong>Company:</strong> {companyName}</p>
-          <p><strong>Location:</strong> {job.location || 'N/A'}</p>
-          <p><strong>Salary:</strong> {job.salary ? `₹${Number(job.salary).toLocaleString('en-IN')}` : 'Not Disclosed'}</p>
-        </>
-      )}
-
-      {error && (
-        <div style={{ color: 'red', margin: '15px 0', padding: '10px', border: '1px solid red', borderRadius: '4px', maxWidth: '400px' }}>
-          <strong>Error:</strong> {error}
-        </div>
-      )}
-
-      {applied ? (
-        <div style={{ color: 'green', margin: '20px 0' }}>
-          <h3>Application Submitted Successfully!</h3>
-          <p>Your application for {job?.title} at {companyName} has been received.</p>
-          <Link to="/student/dashboard">
-            <button>Back to Dashboard</button>
+    <div className="page-container">
+      <div className="center-card" style={{ maxWidth: '640px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #334155', paddingBottom: '16px' }}>
+          <div>
+            <h1 style={{ margin: 0 }}>🚀 Apply for Position</h1>
+            <p style={{ margin: '4px 0 0 0' }}>Confirm application details</p>
+          </div>
+          <Link to={`/student/jobs/${id}`} style={{ textDecoration: 'none' }}>
+            <button style={{ backgroundColor: '#475569', fontSize: '13px' }}>← Cancel</button>
           </Link>
         </div>
-      ) : (
-        <form onSubmit={handleApply} style={{ marginTop: '20px' }}>
-          <p>Click below to confirm and submit your job application.</p>
-          <button type="submit" disabled={applying || !job} style={{ marginRight: '10px' }}>
-            {applying ? 'Submitting...' : 'Confirm & Apply'}
-          </button>
-          <Link to={`/student/jobs/${id}`}>
-            <button type="button">Cancel</button>
-          </Link>
-        </form>
-      )}
+
+        {job && (
+          <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '12px', padding: '20px', marginBottom: '20px' }}>
+            <h2 style={{ margin: '0 0 8px 0', color: '#f8fafc', fontSize: '20px' }}>{job.title}</h2>
+            <p style={{ margin: '0 0 4px 0', color: '#94a3b8' }}>🏢 <strong>Company:</strong> {companyName}</p>
+            <p style={{ margin: '0 0 4px 0', color: '#94a3b8' }}>📍 <strong>Location:</strong> {job.location || 'N/A'}</p>
+            <p style={{ margin: 0, color: '#34d399', fontWeight: '600' }}>
+              💰 <strong>Offered CTC:</strong> {job.salary ? `₹${Number(job.salary).toLocaleString('en-IN')}` : 'Not Disclosed'}
+            </p>
+          </div>
+        )}
+
+        {error && (
+          <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#f87171', margin: '15px 0', padding: '12px', border: '1px solid #ef4444', borderRadius: '8px' }}>
+            <strong>Error:</strong> {error}
+          </div>
+        )}
+
+        {applied ? (
+          <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', borderRadius: '12px', padding: '24px', textAlign: 'center', margin: '20px 0' }}>
+            <div style={{ fontSize: '36px', marginBottom: '10px' }}>🎉</div>
+            <h3 style={{ color: '#34d399', margin: '0 0 8px 0' }}>Application Submitted Successfully!</h3>
+            <p style={{ color: '#cbd5e1', margin: '0 0 20px 0' }}>Your application for <strong>{job?.title}</strong> at <strong>{companyName}</strong> has been received.</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+              <Link to="/student/applications">
+                <button style={{ backgroundColor: '#3b82f6' }}>Track My Applications</button>
+              </Link>
+              <Link to="/student/dashboard">
+                <button style={{ backgroundColor: '#475569' }}>Back to Dashboard</button>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleApply} style={{ marginTop: '20px' }}>
+            <p style={{ color: '#cbd5e1', marginBottom: '20px' }}>
+              Your profile information, academic records, and resume will be shared with <strong>{companyName}</strong>.
+            </p>
+            <button
+              type="submit"
+              disabled={applying || !job}
+              style={{
+                width: '100%',
+                padding: '14px',
+                fontSize: '16px',
+                backgroundColor: '#10b981',
+              }}
+            >
+              {applying ? 'Submitting Application...' : 'Confirm & Submit Application'}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   );
 };

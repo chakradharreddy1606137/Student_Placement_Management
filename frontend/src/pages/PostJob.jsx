@@ -79,14 +79,23 @@ const PostJob = () => {
   };
 
   return (
-    <div>
-      <h1>Post a Job</h1>
-
-      {error && (
-        <div style={{ color: 'red', margin: '15px 0', padding: '10px', border: '1px solid red', borderRadius: '4px', maxWidth: '500px' }}>
-          <strong>Error:</strong> {error}
+    <div className="page-container">
+      <div className="center-card" style={{ maxWidth: '640px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #334155', paddingBottom: '16px' }}>
+          <div>
+            <h1 style={{ margin: 0 }}>➕ Post a Job</h1>
+            <p style={{ margin: '4px 0 0 0' }}>Create a new vacancy for students</p>
+          </div>
+          <Link to="/company/dashboard" style={{ textDecoration: 'none' }}>
+            <button style={{ backgroundColor: '#475569', fontSize: '13px' }}>← Dashboard</button>
+          </Link>
         </div>
-      )}
+
+        {error && (
+          <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#f87171', margin: '15px 0', padding: '12px', border: '1px solid #ef4444', borderRadius: '8px' }}>
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
       {submitted ? (
         <div style={{ color: 'green', margin: '20px 0' }}>
@@ -235,11 +244,9 @@ const PostJob = () => {
           <button type="submit" disabled={loading} style={{ marginRight: '10px' }}>
             {loading ? 'Posting...' : 'Post Job'}
           </button>
-          <Link to="/company/dashboard">
-            <button type="button">Back to Dashboard</button>
-          </Link>
         </form>
       )}
+      </div>
     </div>
   );
 };

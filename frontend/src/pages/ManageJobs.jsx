@@ -44,18 +44,31 @@ const ManageJobs = () => {
     setSelectedJob(job);
   };
 
-  if (loading) return <p style={{ padding: '20px' }}>Loading jobs...</p>;
+  if (loading) {
+    return (
+      <div className="page-container">
+        <div className="center-card" style={{ textAlign: 'center', maxWidth: '600px' }}>
+          <p>Loading jobs...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Manage Jobs</h1>
-      {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+    <div className="page-container">
+      <div className="center-card" style={{ maxWidth: '1050px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #334155', paddingBottom: '16px' }}>
+          <div>
+            <h1 style={{ margin: 0 }}>💼 Manage Jobs</h1>
+            <p style={{ margin: '4px 0 0 0' }}>View, inspect and manage all active job postings</p>
+          </div>
+          <Link to="/admin/dashboard" style={{ textDecoration: 'none' }}>
+            <button style={{ backgroundColor: '#475569', fontSize: '13px' }}>← Dashboard</button>
+          </Link>
+        </div>
+        {error && <p style={{ color: '#f87171', fontWeight: 'bold' }}>{error}</p>}
 
-      <table
-        border="1"
-        cellPadding="10"
-        style={{ borderCollapse: 'collapse', width: '100%', maxWidth: '950px', marginTop: '15px' }}
-      >
+        <table>
         <thead>
           <tr style={{ backgroundColor: '#f2f2f2' }}>
             <th>Job ID</th>
@@ -163,10 +176,7 @@ const ManageJobs = () => {
         </div>
       )}
 
-      <br />
-      <Link to="/admin/dashboard">
-        <button style={{ padding: '8px 15px', cursor: 'pointer' }}>Back to Dashboard</button>
-      </Link>
+      </div>
     </div>
   );
 };

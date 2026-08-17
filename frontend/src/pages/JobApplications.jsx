@@ -71,103 +71,135 @@ const JobApplications = () => {
   };
 
   if (loading) {
-    return <div><p>Loading applications...</p></div>;
+    return (
+      <div className="page-container">
+        <div className="center-card" style={{ textAlign: 'center', maxWidth: '600px' }}>
+          <p>Loading applications...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div>
-        <p style={{ color: 'red' }}>{error}</p>
-        <Link to="/company/dashboard">
-          <button>Back to Dashboard</button>
-        </Link>
+      <div className="page-container">
+        <div className="center-card" style={{ textAlign: 'center', maxWidth: '600px' }}>
+          <p style={{ color: '#f87171' }}>{error}</p>
+          <Link to="/company/dashboard">
+            <button style={{ marginTop: '10px' }}>Back to Dashboard</button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   const titleText = id && job?.title
-    ? `Applications for Job "${job.title}"`
-    : 'All Job Applications';
+    ? `Applications for "${job.title}"`
+    : 'All Candidate Applications';
 
   return (
-    <div>
-      <h1>{titleText}</h1>
+    <div className="page-container">
+      <div className="center-card" style={{ maxWidth: '1100px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid #334155', paddingBottom: '16px' }}>
+          <div>
+            <h1 style={{ margin: 0 }}>📥 {titleText}</h1>
+            <p style={{ margin: '4px 0 0 0' }}>Review candidates and update recruitment status</p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {id && (
+              <Link to="/company/jobs" style={{ textDecoration: 'none' }}>
+                <button style={{ backgroundColor: '#475569', fontSize: '13px' }}>← My Jobs</button>
+              </Link>
+            )}
+            <Link to="/company/dashboard" style={{ textDecoration: 'none' }}>
+              <button style={{ backgroundColor: '#334155', fontSize: '13px' }}>Dashboard</button>
+            </Link>
+          </div>
+        </div>
 
-      {actionMessage && (
-        <p style={{ color: 'green', fontWeight: 'bold' }}>{actionMessage}</p>
-      )}
-
-      {applications.length === 0 ? (
-        <p>No applications found.</p>
-      ) : (
-        <table
-          border="1"
-          cellPadding="10"
-          style={{ borderCollapse: 'collapse', width: '100%', maxWidth: '950px' }}
-        >
-          <thead>
-            <tr style={{ backgroundColor: '#f2f2f2' }}>
-              <th>ID</th>
-              <th>Student Name</th>
-              <th>Email</th>
-              <th>CGPA</th>
-              <th>Branch / College</th>
-              <th>Job</th>
-              <th>Resume</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {applications.map((app) => (
-              <tr key={app.id}>
-                <td>{app.id}</td>
-                <td>{app.student?.user?.name || app.student?.name || 'N/A'}</td>
-                <td>{app.student?.user?.email || app.student?.email || 'N/A'}</td>
-                <td>{app.student?.cgpa ?? 'N/A'}</td>
-                <td>
-                  {app.student?.branch || 'N/A'}
-                  {app.student?.college ? ` (${app.student.college})` : ''}
-                </td>
-                <td>{app.job?.title || 'N/A'}</td>
-                <td>
-                  {app.student?.resumeUrl ? (
-                    <a href={app.student.resumeUrl} target="_blank" rel="noreferrer">
-                      View Resume
-                    </a>
-                  ) : (
-                    'N/A'
-                  )}
-                </td>
-                <td style={{ color: getStatusColor(app.status), fontWeight: 'bold' }}>
-                  {app.status}
-                </td>
-                <td>
-                  <select
-                    value={app.status || 'PENDING'}
-                    onChange={(e) => handleStatusChange(app.id, e.target.value)}
-                  >
-                    <option value="PENDING">PENDING</option>
-                    <option value="SELECTED">SELECTED</option>
-                    <option value="REJECTED">REJECTED</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
-      <br />
-      <div style={{ display: 'flex', gap: '10px' }}>
-        {id && (
-          <Link to="/company/jobs">
-            <button>Back to My Jobs</button>
-          </Link>
+        {actionMessage && (
+          <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', color: '#34d399', padding: '10px 14px', borderRadius: '8px', marginBottom: '16px' }}>
+            {actionMessage}
+          </div>
         )}
-        <Link to="/company/dashboard">
-          <button>Back to Dashboard</button>
-        </Link>
+
+        {applications.length === 0 ? (
+          <p style={{ textAlign: 'center', padding: '30px 0' }}>No applications found for this posting.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Student</th>
+                <th>Email</th>
+                <th>CGPA</th>
+                <th>Branch & College</th>
+                <th>Resume</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.map((app) => (
+                <tr key={app.id}>
+                  <td>#{app.id}</td>
+                  <td style={{ fontWeight: '600' }}>{app.student?.user?.name || app.student?.name || 'N/A'}</td>
+                  <td>{app.student?.user?.email || app.student?.email || 'N/A'}</td>
+                  <td>{app.student?.cgpa ?? 'N/A'}</td>
+                  <td>
+                    {app.student?.branch || 'N/A'}
+                    {app.student?.college ? ` (${app.student.college})` : ''}
+                  </td>
+                  <td>
+                    {app.student?.resumeUrl ? (
+                      <a href={app.student.resumeUrl} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>
+                        📄 View Resume
+                      </a>
+                    ) : (
+                      'N/A'
+                    )}
+                  </td>
+                  <td>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '4px 10px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        backgroundColor:
+                          app.status === 'SELECTED' || app.status === 'ACCEPTED'
+                            ? 'rgba(16, 185, 129, 0.2)'
+                            : app.status === 'REJECTED'
+                            ? 'rgba(239, 68, 68, 0.2)'
+                            : 'rgba(245, 158, 11, 0.2)',
+                        color:
+                          app.status === 'SELECTED' || app.status === 'ACCEPTED'
+                            ? '#34d399'
+                            : app.status === 'REJECTED'
+                            ? '#f87171'
+                            : '#fbbf24',
+                      }}
+                    >
+                      {app.status}
+                    </span>
+                  </td>
+                  <td>
+                    <select
+                      value={app.status || 'PENDING'}
+                      onChange={(e) => handleStatusChange(app.id, e.target.value)}
+                      style={{ padding: '6px 10px', fontSize: '13px' }}
+                    >
+                      <option value="PENDING">PENDING</option>
+                      <option value="SELECTED">SELECTED</option>
+                      <option value="REJECTED">REJECTED</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
