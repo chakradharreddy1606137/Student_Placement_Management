@@ -100,9 +100,33 @@ const JobDetails = () => {
           </div>
         </div>
 
-        <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '10px', padding: '20px', marginBottom: '24px' }}>
-          <h3 style={{ margin: '0 0 10px 0', color: '#f8fafc', fontSize: '16px' }}>Role Description</h3>
+        <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '10px', padding: '20px', marginBottom: '20px' }}>
+          <h3 style={{ margin: '0 0 10px 0', color: '#f8fafc', fontSize: '16px' }}>📝 Role Description</h3>
           <p style={{ margin: 0, color: '#cbd5e1', lineHeight: 1.6 }}>{job.description || 'No detailed description provided.'}</p>
+        </div>
+
+        {/* About Company Card */}
+        <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '10px', padding: '20px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <h3 style={{ margin: 0, color: '#f8fafc', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              🏢 About {companyName}
+            </h3>
+            <span style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontSize: '12px', padding: '3px 8px', borderRadius: '12px' }}>
+              Corporate Partner
+            </span>
+          </div>
+          <p style={{ margin: '0 0 12px 0', color: '#cbd5e1', lineHeight: 1.6, fontSize: '14px' }}>
+            {job.company?.description ||
+              `${companyName} is an industry-leading hiring partner offering comprehensive training, competitive compensations, modern engineering stacks, and clear career trajectories for fresh graduates.`}
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', fontSize: '13px', color: '#94a3b8' }}>
+            <span>📍 <strong>HQ:</strong> {job.company?.location || job.location || 'India'}</span>
+            {job.company?.website && (
+              <span>
+                🌐 <a href={job.company.website} target="_blank" rel="noreferrer" style={{ color: '#38bdf8' }}>{job.company.website}</a>
+              </span>
+            )}
+          </div>
         </div>
 
         <Link to={`/student/jobs/${id}/apply`} style={{ textDecoration: 'none' }}>
