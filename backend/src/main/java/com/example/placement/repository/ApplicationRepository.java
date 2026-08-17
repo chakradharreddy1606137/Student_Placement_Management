@@ -2,13 +2,23 @@ package com.example.placement.repository;
 
 import com.example.placement.model.Application;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
     boolean existsByStudentIdAndJobId(Long studentId, Long jobId);
+
+    @Transactional
+    @Modifying
+    void deleteByStudentId(Long studentId);
+
+    @Transactional
+    @Modifying
+    void deleteByJobId(Long jobId);
 
     @Query("""
         SELECT a

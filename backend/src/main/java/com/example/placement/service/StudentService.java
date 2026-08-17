@@ -1,9 +1,12 @@
 package com.example.placement.service;
 
 import com.example.placement.model.Student;
+import com.example.placement.repository.ApplicationRepository;
 import com.example.placement.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +14,20 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final ApplicationRepository applicationRepository;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, ApplicationRepository applicationRepository) {
         this.studentRepository = studentRepository;
+        this.applicationRepository = applicationRepository;
     }
 
     public Student saveStudent(Student student) {
+        if (student.getCgpa() != null) {
+            BigDecimal cgpa = student.getCgpa();
+            if (cgpa.compareTo(BigDecimal.ZERO) < 0 || cgpa.compareTo(BigDecimal.valueOf(10.0)) > 0) {
+                throw new IllegalArgumentException("CGPA must be between 0.0 and 10.0");
+            }
+        }
         return studentRepository.save(student);
     }
 
@@ -32,7 +43,10 @@ public class StudentService {
         return studentRepository.findByUserEmail(email);
     }
 
+    @Transactional
     public void deleteStudent(Long id) {
+        applicationRepository.deleteByStudentId(id);
         studentRepository.deleteById(id);
     }
 }
+

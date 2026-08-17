@@ -21,7 +21,15 @@ public class UserService {
     }
 
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (user.getId() == null && userRepository.findByEmail(user.getEmail().trim()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists: " + user.getEmail());
+        }
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userRepository.save(user);
     }
 
