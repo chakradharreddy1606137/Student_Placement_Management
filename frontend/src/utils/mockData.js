@@ -12,6 +12,7 @@ const DEFAULT_USERS = [
   { id: 1, name: 'Alex Sharma (Student)', email: 'student@example.com', role: 'STUDENT', token: 'demo-student-jwt-token' },
   { id: 2, name: 'Google Campus Team', email: 'recruiter@google.com', role: 'COMPANY', token: 'demo-company-jwt-token' },
   { id: 3, name: 'Campus Placement Cell', email: 'admin@example.com', role: 'ADMIN', token: 'demo-admin-jwt-token' },
+  { id: 4, name: 'Rishitha (Student)', email: 'rishitha@gmail.com', role: 'STUDENT', token: 'demo-rishitha-jwt-token' },
 ]
 
 const DEFAULT_STUDENTS = [
@@ -30,7 +31,19 @@ const DEFAULT_STUDENTS = [
   {
     id: 2,
     userId: 4,
-    user: { id: 4, name: 'Priya Patel', email: 'priya@example.com' },
+    user: { id: 4, name: 'Rishitha', email: 'rishitha@gmail.com' },
+    college: 'National Institute of Technology',
+    degree: 'B.Tech',
+    branch: 'Computer Science & Engineering',
+    graduationYear: 2026,
+    cgpa: 9.2,
+    phone: '+91 98765 43219',
+    resumeUrl: 'https://example.com/rishitha_resume.pdf',
+  },
+  {
+    id: 3,
+    userId: 5,
+    user: { id: 5, name: 'Priya Patel', email: 'priya@example.com' },
     college: 'IIT Bombay',
     degree: 'B.Tech',
     branch: 'Information Technology',
