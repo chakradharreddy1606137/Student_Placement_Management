@@ -50,61 +50,51 @@ public class DataSeeder implements CommandLineRunner {
         admin.setRole("ADMIN");
         userRepository.save(admin);
 
-        // Backup admin
-        if (!userRepository.findByEmail("admin@example.com").isPresent()) {
-            User adminBackup = new User();
-            adminBackup.setName("Placement Admin");
-            adminBackup.setEmail("admin@example.com");
-            adminBackup.setPassword(passwordEncoder.encode("password123"));
-            adminBackup.setRole("ADMIN");
-            userRepository.save(adminBackup);
-        }
-
         // 2. COMPANY RECRUITERS (Harsha, Sai Charan, Indra)
         User harshaUser = new User();
-        harshaUser.setName("Harsha (Google Recruiter)");
+        harshaUser.setName("Harsha (Microsoft Recruiter)");
         harshaUser.setEmail("harsha@gmail.com");
         harshaUser.setPassword(passwordEncoder.encode("harsha123"));
         harshaUser.setRole("COMPANY");
         userRepository.save(harshaUser);
 
-        Company googleCompany = new Company();
-        googleCompany.setUser(harshaUser);
-        googleCompany.setCompanyName("Google Cloud");
-        googleCompany.setDescription("Global tech leader in cloud computing and distributed microservices.");
-        googleCompany.setLocation("Bengaluru / Hyderabad");
-        googleCompany.setWebsite("https://careers.google.com");
-        companyRepository.save(googleCompany);
+        Company microsoftCompany = new Company();
+        microsoftCompany.setUser(harshaUser);
+        microsoftCompany.setCompanyName("Microsoft");
+        microsoftCompany.setDescription("Software development company");
+        microsoftCompany.setLocation("Hyderabad");
+        microsoftCompany.setWebsite("https://www.microsoft.com/en-in/");
+        companyRepository.save(microsoftCompany);
 
         User saicharanUser = new User();
-        saicharanUser.setName("Sai Charan (Microsoft Recruiter)");
+        saicharanUser.setName("Sai Charan (Perficient Recruiter)");
         saicharanUser.setEmail("saicharan@gmail.com");
         saicharanUser.setPassword(passwordEncoder.encode("saicharan123"));
         saicharanUser.setRole("COMPANY");
         userRepository.save(saicharanUser);
 
-        Company microsoftCompany = new Company();
-        microsoftCompany.setUser(saicharanUser);
-        microsoftCompany.setCompanyName("Microsoft");
-        microsoftCompany.setDescription("Empowering every person and organization on the planet to achieve more.");
-        microsoftCompany.setLocation("Hyderabad, India");
-        microsoftCompany.setWebsite("https://careers.microsoft.com");
-        companyRepository.save(microsoftCompany);
+        Company perficientCompany = new Company();
+        perficientCompany.setUser(saicharanUser);
+        perficientCompany.setCompanyName("Perficient");
+        perficientCompany.setDescription("Associate Technical Consultant");
+        perficientCompany.setLocation("Nagpur");
+        perficientCompany.setWebsite("https://www.perficient.com/");
+        companyRepository.save(perficientCompany);
 
         User indraUser = new User();
-        indraUser.setName("Indra (Amazon Recruiter)");
+        indraUser.setName("Indra (Accenture Recruiter)");
         indraUser.setEmail("indra@gmail.com");
         indraUser.setPassword(passwordEncoder.encode("indra123"));
         indraUser.setRole("COMPANY");
         userRepository.save(indraUser);
 
-        Company amazonCompany = new Company();
-        amazonCompany.setUser(indraUser);
-        amazonCompany.setCompanyName("Amazon AWS");
-        amazonCompany.setDescription("World-leading cloud infrastructure, distributed data systems, and e-commerce.");
-        amazonCompany.setLocation("Bengaluru, India");
-        amazonCompany.setWebsite("https://amazon.jobs");
-        companyRepository.save(amazonCompany);
+        Company accentureCompany = new Company();
+        accentureCompany.setUser(indraUser);
+        accentureCompany.setCompanyName("Accenture");
+        accentureCompany.setDescription("AI Engineer");
+        accentureCompany.setLocation("Bangalore");
+        accentureCompany.setWebsite("https://www.accenture.com/in-en");
+        companyRepository.save(accentureCompany);
 
         // 3. STUDENTS (Exact records from MySQL Workbench)
         createStudent("Nitya", "nitya@gmail.com", "nitya123", "VNIT Nagpur", "B.Tech", "CSE", 2025, "8.50", "6300373746", "https://Nitya.com");
