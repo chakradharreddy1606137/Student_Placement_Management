@@ -1,11 +1,11 @@
 // Interactive Mock Storage for Live GitHub Pages Demo Mode
 
 const STORAGE_KEYS = {
-  USERS: 'spm_demo_users',
-  STUDENTS: 'spm_demo_students',
-  COMPANIES: 'spm_demo_companies',
-  JOBS: 'spm_demo_jobs',
-  APPLICATIONS: 'spm_demo_applications',
+  USERS: 'spm_demo_users_v2',
+  STUDENTS: 'spm_demo_students_v2',
+  COMPANIES: 'spm_demo_companies_v2',
+  JOBS: 'spm_demo_jobs_v2',
+  APPLICATIONS: 'spm_demo_applications_v2',
 }
 
 const DEFAULT_USERS = [
