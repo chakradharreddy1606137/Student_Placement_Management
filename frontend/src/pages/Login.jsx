@@ -224,9 +224,13 @@ function Login({ role }) {
                     ? 'recruiter@google.com'
                     : role?.toUpperCase() === 'ADMIN'
                     ? 'admin@example.com'
-                    : 'student@example.com'
+                    : 'rishitha@gmail.com'
+                const targetPassword =
+                  role?.toUpperCase() === 'STUDENT' || !role
+                    ? 'rishitha123'
+                    : 'password123'
                 setEmail(targetEmail)
-                setPassword('password123')
+                setPassword(targetPassword)
               }}
               style={{
                 backgroundColor: '#334155',
