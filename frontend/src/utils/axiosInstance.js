@@ -1,20 +1,35 @@
 import axios from 'axios'
 import { MockStore } from './mockData'
 
-const isLocalhost =
-  typeof window !== 'undefined' &&
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || (isLocalhost ? 'http://localhost:8083' : '')
+export const getActiveApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('spm_custom_api_url')
+    if (custom) return custom.trim().replace(/\/+$/, '')
+  }
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.trim().replace(/\/+$/, '')
+  }
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ) {
+    return 'http://localhost:8083'
+  }
+  return ''
+}
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE_URL || undefined,
-  timeout: 4000,
+  baseURL: getActiveApiUrl() || undefined,
+  timeout: 5000,
 })
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    const currentBaseUrl = getActiveApiUrl()
+    if (currentBaseUrl) {
+      config.baseURL = currentBaseUrl
+    }
+
     const storedUser = localStorage.getItem('user')
 
     if (storedUser) {

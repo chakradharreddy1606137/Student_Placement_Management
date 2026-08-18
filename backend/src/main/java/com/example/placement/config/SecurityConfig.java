@@ -49,6 +49,9 @@ public class SecurityConfig {
                 // Allow CORS preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
+                // Public Health and Status Endpoints
+                .requestMatchers("/", "/api/health", "/api/status").permitAll()
+
                 // Public Auth Endpoints
                 .requestMatchers("/api/auth/**").permitAll()
 
@@ -84,7 +87,19 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+
+        if (origins.contains("*")) {
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            configuration.setAllowedOrigins(origins);
+            configuration.setAllowedOriginPatterns(List.of("https://*github.io*", "http://localhost:*", "http://127.0.0.1:*"));
+        }
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

@@ -1,8 +1,43 @@
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { MockStore } from '../utils/mockData'
+import axiosInstance, { getActiveApiUrl } from '../utils/axiosInstance'
 
 function Home() {
   const navigate = useNavigate()
+  const [backendStatus, setBackendStatus] = useState('checking') // 'online' | 'demo' | 'checking'
+  const [backendData, setBackendData] = useState(null)
+  const [showConfig, setShowConfig] = useState(false)
+  const [customApiUrl, setCustomApiUrl] = useState(localStorage.getItem('spm_custom_api_url') || '')
+
+  useEffect(() => {
+    checkBackendHealth()
+  }, [])
+
+  const checkBackendHealth = async () => {
+    setBackendStatus('checking')
+    try {
+      const res = await axiosInstance.get('/api/health')
+      if (res.data && res.data.status === 'UP') {
+        setBackendStatus('online')
+        setBackendData(res.data)
+      } else {
+        setBackendStatus('demo')
+      }
+    } catch {
+      setBackendStatus('demo')
+    }
+  }
+
+  const handleSaveApiUrl = (e) => {
+    e.preventDefault()
+    if (customApiUrl.trim()) {
+      localStorage.setItem('spm_custom_api_url', customApiUrl.trim())
+    } else {
+      localStorage.removeItem('spm_custom_api_url')
+    }
+    checkBackendHealth()
+  }
 
   const handleInstantDemoLogin = (role) => {
     let user
@@ -59,7 +94,7 @@ function Home() {
       <div
         style={{
           width: '100%',
-          maxWidth: '560px',
+          maxWidth: '620px',
           backgroundColor: '#1e293b',
           border: '1px solid #334155',
           borderRadius: '16px',
@@ -84,12 +119,113 @@ function Home() {
         >
           🎓 Student Placement Management
         </h1>
-        <p style={{ margin: '0 0 28px 0', fontSize: '14px', color: '#94a3b8', lineHeight: 1.5 }}>
-          Unified recruitment platform connecting students, hiring companies, and university placement administrators.
+        <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#94a3b8', lineHeight: 1.5 }}>
+          Full-Stack placement portal connecting students, recruiters, and placement administrators.
         </p>
 
+        {/* Live Architecture Status Bar */}
+        <div
+          style={{
+            backgroundColor: '#0f172a',
+            border: '1px solid #334155',
+            borderRadius: '10px',
+            padding: '12px 14px',
+            marginBottom: '22px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '8px',
+            fontSize: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>🌐 Frontend:</span>
+            <span style={{ color: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+              ● Live (GitHub Pages)
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#a78bfa', fontWeight: 'bold' }}>⚙️ API:</span>
+            {backendStatus === 'online' ? (
+              <span style={{ color: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                ● Cloud Live {backendData?.database === 'CONNECTED' ? '(MySQL Connected)' : ''}
+              </span>
+            ) : backendStatus === 'checking' ? (
+              <span style={{ color: '#fbbf24', backgroundColor: 'rgba(251, 191, 36, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                ● Checking API...
+              </span>
+            ) : (
+              <span style={{ color: '#93c5fd', backgroundColor: 'rgba(59, 130, 246, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                ● Interactive Demo Mode
+              </span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowConfig(!showConfig)}
+            style={{
+              backgroundColor: '#1e293b',
+              border: '1px solid #475569',
+              color: '#cbd5e1',
+              padding: '4px 8px',
+              fontSize: '11px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            ⚙️ Setup
+          </button>
+        </div>
+
+        {/* Dynamic Backend URL Config Drawer */}
+        {showConfig && (
+          <div
+            style={{
+              backgroundColor: '#0b1120',
+              border: '1px solid #3b82f6',
+              borderRadius: '10px',
+              padding: '16px',
+              marginBottom: '20px',
+              textAlign: 'left',
+              fontSize: '13px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <strong style={{ color: '#93c5fd' }}>🔌 Cloud Backend API Connection</strong>
+              <button
+                type="button"
+                onClick={() => setShowConfig(false)}
+                style={{ backgroundColor: 'transparent', color: '#94a3b8', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+              >
+                ✕
+              </button>
+            </div>
+            <p style={{ margin: '0 0 10px 0', color: '#94a3b8', fontSize: '12px' }}>
+              Connect this live frontend to your live Java Spring Boot backend (Render, Railway, or AWS):
+            </p>
+            <form onSubmit={handleSaveApiUrl} style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                placeholder="e.g. https://your-backend.onrender.com"
+                value={customApiUrl}
+                onChange={(e) => setCustomApiUrl(e.target.value)}
+                style={{ flex: 1, padding: '8px 10px', fontSize: '12px' }}
+              />
+              <button type="submit" style={{ padding: '8px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                Save & Test
+              </button>
+            </form>
+            <p style={{ margin: '8px 0 0 0', color: '#64748b', fontSize: '11px' }}>
+              Active Endpoint: {getActiveApiUrl() || 'Interactive Demo Mode (Fallback)'}
+            </p>
+          </div>
+        )}
+
         {/* Standard Portals Navigation */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
           <Link to="/login/student" style={{ textDecoration: 'none' }}>
             <button
               style={{
@@ -175,7 +311,7 @@ function Home() {
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <h3 style={{ margin: 0, fontSize: '14px', fontWeight: '700', color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>🚀</span> 1-Click Live Preview Portals
+              <span>⚡</span> Instant 1-Click Role Access
             </h3>
             <span
               style={{
@@ -187,11 +323,11 @@ function Home() {
                 fontWeight: '600',
               }}
             >
-              Instant Access
+              Live Portals
             </span>
           </div>
           <p style={{ margin: '0 0 14px 0', fontSize: '13px', color: '#94a3b8' }}>
-            Exploring online? Jump straight into any role dashboard without entering credentials:
+            Test all features instantly across roles with pre-loaded mock profiles and applications:
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
@@ -210,7 +346,7 @@ function Home() {
                 transition: 'background-color 0.2s',
               }}
             >
-              👨‍🎓 Demo Student
+              👨‍🎓 Student
             </button>
 
             <button
@@ -228,7 +364,7 @@ function Home() {
                 transition: 'background-color 0.2s',
               }}
             >
-              🏢 Demo Company
+              🏢 Company
             </button>
 
             <button
@@ -246,7 +382,7 @@ function Home() {
                 transition: 'background-color 0.2s',
               }}
             >
-              🔑 Demo Admin
+              🔑 Admin
             </button>
           </div>
         </div>
@@ -256,3 +392,4 @@ function Home() {
 }
 
 export default Home
+

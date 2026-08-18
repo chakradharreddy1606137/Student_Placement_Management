@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql-db:
+    image: mysql:8.0
+    container_name: placement-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: placement_management
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./database/sample_data.sql:/docker-entrypoint-initdb.d/2-sample_data.sql
+    networks:
+      - placement-network
+
+  # Spring Boot Backend API Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: placement-backend
+    restart: always
+    depends_on:
+      - mysql-db
+    environment:
+      DB_URL: jdbc:mysql://mysql-db:3306/placement_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      PORT: 8083
+      CORS_ORIGINS: "http://localhost:5173,http://localhost:5174,http://localhost:5175,https://chakradharreddy1606137.github.io"
+    ports:
+      - "8083:8083"
+    networks:
+      - placement-network
+
+  # React Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: placement-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - placement-network
+
+volumes:
+  mysql_data:
+
+networks:
+  placement-network:
+    driver: bridge
