@@ -36,112 +36,103 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.count() > 0) {
-            return; // Already initialized
+        if (userRepository.findByEmail("chakri@gmail.com").isPresent()) {
+            return; // Already initialized with main dataset
         }
 
-        System.out.println("[DataSeeder] Initializing cloud database with seed data...");
+        System.out.println("[DataSeeder] Initializing MySQL database with primary placement dataset...");
 
-        String defaultHash = passwordEncoder.encode("password123");
-
-        // 1. Admin
+        // 1. ADMIN (Chakri)
         User admin = new User();
-        admin.setName("Placement Officer (Admin)");
-        admin.setEmail("admin@example.com");
-        admin.setPassword(defaultHash);
+        admin.setName("Chakri (Admin)");
+        admin.setEmail("chakri@gmail.com");
+        admin.setPassword(passwordEncoder.encode("chakri123"));
         admin.setRole("ADMIN");
         userRepository.save(admin);
 
-        // 2. Student 1
-        User studentUser = new User();
-        studentUser.setName("Alex Sharma");
-        studentUser.setEmail("student@example.com");
-        studentUser.setPassword(defaultHash);
-        studentUser.setRole("STUDENT");
-        userRepository.save(studentUser);
+        // Backup admin
+        if (!userRepository.findByEmail("admin@example.com").isPresent()) {
+            User adminBackup = new User();
+            adminBackup.setName("Placement Admin");
+            adminBackup.setEmail("admin@example.com");
+            adminBackup.setPassword(passwordEncoder.encode("password123"));
+            adminBackup.setRole("ADMIN");
+            userRepository.save(adminBackup);
+        }
 
-        Student student = new Student();
-        student.setUser(studentUser);
-        student.setCollege("National Institute of Technology");
-        student.setDegree("B.Tech");
-        student.setBranch("Computer Science & Engineering");
-        student.setGraduationYear(2026);
-        student.setCgpa(new BigDecimal("8.90"));
-        student.setPhone("+91 98765 43210");
-        student.setResumeUrl("https://example.com/alex_resume.pdf");
-        studentRepository.save(student);
+        // 2. COMPANY RECRUITERS (Harsha, Sai Charan, Indra)
+        User harshaUser = new User();
+        harshaUser.setName("Harsha (Google Recruiter)");
+        harshaUser.setEmail("harsha@gmail.com");
+        harshaUser.setPassword(passwordEncoder.encode("harsha123"));
+        harshaUser.setRole("COMPANY");
+        userRepository.save(harshaUser);
 
-        // 3. Student 2
-        User studentUser2 = new User();
-        studentUser2.setName("Priya Patel");
-        studentUser2.setEmail("priya@example.com");
-        studentUser2.setPassword(defaultHash);
-        studentUser2.setRole("STUDENT");
-        userRepository.save(studentUser2);
+        Company googleCompany = new Company();
+        googleCompany.setUser(harshaUser);
+        googleCompany.setCompanyName("Google Cloud");
+        googleCompany.setDescription("Global tech leader in cloud computing and distributed microservices.");
+        googleCompany.setLocation("Bengaluru / Hyderabad");
+        googleCompany.setWebsite("https://careers.google.com");
+        companyRepository.save(googleCompany);
 
-        Student student2 = new Student();
-        student2.setUser(studentUser2);
-        student2.setCollege("IIT Bombay");
-        student2.setDegree("B.Tech");
-        student2.setBranch("Information Technology");
-        student2.setGraduationYear(2026);
-        student2.setCgpa(new BigDecimal("9.40"));
-        student2.setPhone("+91 98765 43211");
-        student2.setResumeUrl("https://example.com/priya_resume.pdf");
-        studentRepository.save(student2);
+        User saicharanUser = new User();
+        saicharanUser.setName("Sai Charan (Microsoft Recruiter)");
+        saicharanUser.setEmail("saicharan@gmail.com");
+        saicharanUser.setPassword(passwordEncoder.encode("saicharan123"));
+        saicharanUser.setRole("COMPANY");
+        userRepository.save(saicharanUser);
 
-        // 4. Company 1
-        User companyUser1 = new User();
-        companyUser1.setName("Google Campus Recruiter");
-        companyUser1.setEmail("recruiter@google.com");
-        companyUser1.setPassword(defaultHash);
-        companyUser1.setRole("COMPANY");
-        userRepository.save(companyUser1);
+        Company microsoftCompany = new Company();
+        microsoftCompany.setUser(saicharanUser);
+        microsoftCompany.setCompanyName("Microsoft");
+        microsoftCompany.setDescription("Empowering every person and organization on the planet to achieve more.");
+        microsoftCompany.setLocation("Hyderabad, India");
+        microsoftCompany.setWebsite("https://careers.microsoft.com");
+        companyRepository.save(microsoftCompany);
 
-        Company company1 = new Company();
-        company1.setUser(companyUser1);
-        company1.setCompanyName("Google Cloud");
-        company1.setDescription("Global technology leader in cloud computing and distributed systems.");
-        company1.setLocation("Bengaluru / Hyderabad");
-        company1.setWebsite("https://careers.google.com");
-        companyRepository.save(company1);
+        User indraUser = new User();
+        indraUser.setName("Indra (Amazon Recruiter)");
+        indraUser.setEmail("indra@gmail.com");
+        indraUser.setPassword(passwordEncoder.encode("indra123"));
+        indraUser.setRole("COMPANY");
+        userRepository.save(indraUser);
 
-        // 5. Company 2
-        User companyUser2 = new User();
-        companyUser2.setName("Microsoft Talent Recruiter");
-        companyUser2.setEmail("recruiter@microsoft.com");
-        companyUser2.setPassword(defaultHash);
-        companyUser2.setRole("COMPANY");
-        userRepository.save(companyUser2);
+        Company amazonCompany = new Company();
+        amazonCompany.setUser(indraUser);
+        amazonCompany.setCompanyName("Amazon AWS");
+        amazonCompany.setDescription("World-leading cloud infrastructure, distributed data systems, and e-commerce.");
+        amazonCompany.setLocation("Bengaluru, India");
+        amazonCompany.setWebsite("https://amazon.jobs");
+        companyRepository.save(amazonCompany);
 
-        Company company2 = new Company();
-        company2.setUser(companyUser2);
-        company2.setCompanyName("Microsoft");
-        company2.setDescription("Empowering every person and organization on the planet to achieve more.");
-        company2.setLocation("Hyderabad, India");
-        company2.setWebsite("https://careers.microsoft.com");
-        companyRepository.save(company2);
+        // 3. STUDENTS (Rishitha, Nitya, Bhargav, Srujan, Anurag)
+        createStudent("Rishitha", "rishitha@gmail.com", "rishitha123", "B.Tech", "Computer Science & Engineering", "9.40", "+91 98765 43210");
+        createStudent("Nitya", "nitya@gmail.com", "nitya123", "B.Tech", "Computer Science & Engineering", "9.10", "+91 98765 43211");
+        createStudent("Bhargav", "bhargav@gmail.com", "bhargav123", "B.Tech", "Computer Science & Engineering", "8.80", "+91 98765 43212");
+        createStudent("Srujan", "srujan@gmail.com", "srujan123", "B.Tech", "Information Technology", "8.70", "+91 98765 43213");
+        createStudent("Anurag", "anurag@gmail.com", "anurag123", "B.Tech", "Electronics & Communication", "8.90", "+91 98765 43214");
 
-        // 6. Jobs
+        // 4. JOBS
         Job job1 = new Job();
-        job1.setCompany(company1);
+        job1.setCompany(googleCompany);
         job1.setTitle("Software Development Engineer (SDE-1)");
-        job1.setDescription("Design and build high-throughput backend services in Java/Spring Boot and modern React.");
+        job1.setDescription("Build high-performance distributed backend services using Java, Spring Boot, and React.");
         job1.setLocation("Bengaluru, India");
-        job1.setSalary(new BigDecimal("2200000.00"));
+        job1.setSalary(new BigDecimal("2400000.00"));
         job1.setJobType("FULL_TIME");
         job1.setMinimumCgpa(new BigDecimal("7.50"));
-        job1.setExperienceRequired("0-1 Year (Fresher)");
+        job1.setExperienceRequired("Fresher (2026 Batch)");
         job1.setDeadline(LocalDate.now().plusMonths(3));
         job1.setCreatedAt(LocalDateTime.now());
         jobRepository.save(job1);
 
         Job job2 = new Job();
-        job2.setCompany(company1);
-        job2.setTitle("Cloud Solutions Associate");
-        job2.setDescription("Architect scalable cloud infrastructures and Kubernetes pipelines.");
+        job2.setCompany(microsoftCompany);
+        job2.setTitle("Cloud Solutions Engineer");
+        job2.setDescription("Design and build scalable Azure enterprise cloud architectures.");
         job2.setLocation("Hyderabad, India");
-        job2.setSalary(new BigDecimal("1850000.00"));
+        job2.setSalary(new BigDecimal("2100000.00"));
         job2.setJobType("FULL_TIME");
         job2.setMinimumCgpa(new BigDecimal("7.00"));
         job2.setExperienceRequired("Fresher");
@@ -150,33 +141,70 @@ public class DataSeeder implements CommandLineRunner {
         jobRepository.save(job2);
 
         Job job3 = new Job();
-        job3.setCompany(company2);
-        job3.setTitle("Full Stack Engineer");
-        job3.setDescription("Develop end-to-end cloud products using TypeScript, React, Spring Boot, and Azure.");
-        job3.setLocation("Hyderabad, India");
-        job3.setSalary(new BigDecimal("2000000.00"));
+        job3.setCompany(amazonCompany);
+        job3.setTitle("AWS DevOps & Backend Engineer");
+        job3.setDescription("Develop high-scale cloud services, CI/CD automation, and microservices.");
+        job3.setLocation("Bengaluru, India");
+        job3.setSalary(new BigDecimal("2250000.00"));
         job3.setJobType("FULL_TIME");
         job3.setMinimumCgpa(new BigDecimal("8.00"));
-        job3.setExperienceRequired("0-2 Years");
+        job3.setExperienceRequired("0-1 Year");
         job3.setDeadline(LocalDate.now().plusMonths(2));
         job3.setCreatedAt(LocalDateTime.now());
         jobRepository.save(job3);
 
-        // 7. Applications
-        Application app1 = new Application();
-        app1.setStudent(student);
-        app1.setJob(job1);
-        app1.setStatus("SHORTLISTED");
-        app1.setAppliedAt(LocalDateTime.now());
-        applicationRepository.save(app1);
+        // 5. APPLICATIONS
+        Student rishithaStudent = studentRepository.findAll().stream().filter(s -> s.getUser().getEmail().equals("rishitha@gmail.com")).findFirst().orElse(null);
+        Student nityaStudent = studentRepository.findAll().stream().filter(s -> s.getUser().getEmail().equals("nitya@gmail.com")).findFirst().orElse(null);
+        Student bhargavStudent = studentRepository.findAll().stream().filter(s -> s.getUser().getEmail().equals("bhargav@gmail.com")).findFirst().orElse(null);
 
-        Application app2 = new Application();
-        app2.setStudent(student2);
-        app2.setJob(job1);
-        app2.setStatus("SELECTED");
-        app2.setAppliedAt(LocalDateTime.now());
-        applicationRepository.save(app2);
+        if (rishithaStudent != null) {
+            Application app1 = new Application();
+            app1.setStudent(rishithaStudent);
+            app1.setJob(job1);
+            app1.setStatus("SELECTED");
+            app1.setAppliedAt(LocalDateTime.now().minusDays(3));
+            applicationRepository.save(app1);
+        }
 
-        System.out.println("[DataSeeder] Successfully seeded initial cloud database records!");
+        if (nityaStudent != null) {
+            Application app2 = new Application();
+            app2.setStudent(nityaStudent);
+            app2.setJob(job2);
+            app2.setStatus("SHORTLISTED");
+            app2.setAppliedAt(LocalDateTime.now().minusDays(2));
+            applicationRepository.save(app2);
+        }
+
+        if (bhargavStudent != null) {
+            Application app3 = new Application();
+            app3.setStudent(bhargavStudent);
+            app3.setJob(job3);
+            app3.setStatus("PENDING");
+            app3.setAppliedAt(LocalDateTime.now().minusDays(1));
+            applicationRepository.save(app3);
+        }
+
+        System.out.println("[DataSeeder] Successfully initialized database with Chakri, Harsha, Sai Charan, Indra, Rishitha, Nitya, Bhargav, Srujan, and Anurag!");
+    }
+
+    private void createStudent(String name, String email, String password, String degree, String branch, String cgpa, String phone) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRole("STUDENT");
+        userRepository.save(user);
+
+        Student student = new Student();
+        student.setUser(user);
+        student.setCollege("National Institute of Technology");
+        student.setDegree(degree);
+        student.setBranch(branch);
+        student.setGraduationYear(2026);
+        student.setCgpa(new BigDecimal(cgpa));
+        student.setPhone(phone);
+        student.setResumeUrl("https://example.com/" + name.toLowerCase() + "_resume.pdf");
+        studentRepository.save(student);
     }
 }
