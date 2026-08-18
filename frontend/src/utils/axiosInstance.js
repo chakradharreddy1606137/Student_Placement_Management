@@ -52,7 +52,8 @@ axiosInstance.interceptors.request.use(
 
 // Mock Response Handler for Live Demo Mode / Offline Backend
 function handleMockRequest(config) {
-  const url = config.url || ''
+  const rawUrl = (config.url || '').toLowerCase()
+  const cleanUrl = rawUrl.split('?')[0].replace(/^https?:\/\/[^\/]+/, '')
   const method = (config.method || 'get').toLowerCase()
   let data = config.data
 
@@ -68,17 +69,21 @@ function handleMockRequest(config) {
   const currentUser = storedUserStr ? JSON.parse(storedUserStr) : null
 
   // 1. Auth Login
-  if (url.includes('/api/auth/login') && method === 'post') {
+  if (cleanUrl.includes('/api/auth/login') && method === 'post') {
     const emailLower = (data?.email || '').toLowerCase()
     let assignedRole = 'STUDENT'
     if (
       emailLower.includes('company') ||
       emailLower.includes('recruiter') ||
-      emailLower.includes('google') ||
-      emailLower.includes('microsoft')
+      emailLower.includes('microsoft') ||
+      emailLower.includes('perficient') ||
+      emailLower.includes('accenture') ||
+      emailLower.includes('harsha') ||
+      emailLower.includes('saicharan') ||
+      emailLower.includes('indra')
     ) {
       assignedRole = 'COMPANY'
-    } else if (emailLower.includes('admin') || emailLower.includes('officer')) {
+    } else if (emailLower.includes('admin') || emailLower.includes('chakri') || emailLower.includes('officer')) {
       assignedRole = 'ADMIN'
     }
 
@@ -95,39 +100,39 @@ function handleMockRequest(config) {
   }
 
   // 2. Student Endpoints
-  if (url === '/api/students/me' && method === 'get') {
+  if ((cleanUrl === '/api/students/me' || cleanUrl.startsWith('/api/students/me')) && method === 'get') {
     const students = MockStore.getStudents()
     const student =
-      students.find((s) => s.user?.email === currentUser?.email || s.userId === currentUser?.id) ||
+      students.find((s) => s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() || s.userId === currentUser?.id) ||
       students[0]
     return { data: student, status: 200 }
   }
 
-  if (url === '/api/students' && method === 'get') {
+  if ((cleanUrl === '/api/students' || cleanUrl === '/api/students/') && method === 'get') {
     return { data: MockStore.getStudents(), status: 200 }
   }
 
-  if (url.startsWith('/api/students/') && method === 'delete') {
-    const id = parseInt(url.split('/api/students/')[1], 10)
+  if (cleanUrl.startsWith('/api/students/') && method === 'delete') {
+    const id = parseInt(cleanUrl.split('/api/students/')[1], 10)
     const students = MockStore.getStudents().filter((s) => s.id !== id)
     MockStore.saveStudents(students)
     return { data: { message: 'Student deleted successfully' }, status: 200 }
   }
 
   // 3. Company Endpoints
-  if (url === '/api/companies/me' && method === 'get') {
+  if ((cleanUrl === '/api/companies/me' || cleanUrl.startsWith('/api/companies/me')) && method === 'get') {
     const companies = MockStore.getCompanies()
     const company =
-      companies.find((c) => c.user?.email === currentUser?.email || c.userId === currentUser?.id) ||
+      companies.find((c) => c.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() || c.userId === currentUser?.id) ||
       companies[0]
     return { data: company, status: 200 }
   }
 
-  if (url === '/api/companies' && method === 'get') {
+  if ((cleanUrl === '/api/companies' || cleanUrl === '/api/companies/') && method === 'get') {
     return { data: MockStore.getCompanies(), status: 200 }
   }
 
-  if (url === '/api/companies' && method === 'post') {
+  if ((cleanUrl === '/api/companies' || cleanUrl === '/api/companies/') && method === 'post') {
     const companies = MockStore.getCompanies()
     let updatedCompany = data
     const existingIndex = companies.findIndex((c) => c.id === data.id || c.companyName === data.companyName)
@@ -142,25 +147,25 @@ function handleMockRequest(config) {
     return { data: updatedCompany, status: 200 }
   }
 
-  if (url.startsWith('/api/companies/') && method === 'delete') {
-    const id = parseInt(url.split('/api/companies/')[1], 10)
+  if (cleanUrl.startsWith('/api/companies/') && method === 'delete') {
+    const id = parseInt(cleanUrl.split('/api/companies/')[1], 10)
     const companies = MockStore.getCompanies().filter((c) => c.id !== id)
     MockStore.saveCompanies(companies)
     return { data: { message: 'Company deleted successfully' }, status: 200 }
   }
 
   // 4. Job Endpoints
-  if (url === '/api/jobs' && method === 'get') {
+  if ((cleanUrl === '/api/jobs' || cleanUrl === '/api/jobs/') && method === 'get') {
     return { data: MockStore.getJobs(), status: 200 }
   }
 
-  if (url.startsWith('/api/jobs/') && !url.includes('/applications') && method === 'get') {
-    const id = parseInt(url.split('/api/jobs/')[1], 10)
+  if (cleanUrl.startsWith('/api/jobs/') && !cleanUrl.includes('/applications') && method === 'get') {
+    const id = parseInt(cleanUrl.split('/api/jobs/')[1], 10)
     const job = MockStore.getJobs().find((j) => j.id === id) || MockStore.getJobs()[0]
     return { data: job, status: 200 }
   }
 
-  if (url === '/api/jobs' && method === 'post') {
+  if ((cleanUrl === '/api/jobs' || cleanUrl === '/api/jobs/') && method === 'post') {
     const jobs = MockStore.getJobs()
     const newJob = {
       id: Date.now(),
@@ -181,24 +186,24 @@ function handleMockRequest(config) {
     return { data: newJob, status: 201 }
   }
 
-  if (url.startsWith('/api/jobs/') && method === 'delete') {
-    const id = parseInt(url.split('/api/jobs/')[1], 10)
+  if (cleanUrl.startsWith('/api/jobs/') && method === 'delete') {
+    const id = parseInt(cleanUrl.split('/api/jobs/')[1], 10)
     const jobs = MockStore.getJobs().filter((j) => j.id !== id)
     MockStore.saveJobs(jobs)
     return { data: { message: 'Job deleted successfully' }, status: 200 }
   }
 
   // 5. Application Endpoints
-  if (url === '/api/applications/my' && method === 'get') {
+  if ((cleanUrl === '/api/applications/my' || cleanUrl.startsWith('/api/applications/my')) && method === 'get') {
     const apps = MockStore.getApplications()
     return { data: apps, status: 200 }
   }
 
-  if (url === '/api/applications' && method === 'get') {
+  if ((cleanUrl === '/api/applications' || cleanUrl === '/api/applications/') && method === 'get') {
     return { data: MockStore.getApplications(), status: 200 }
   }
 
-  if (url === '/api/applications' && method === 'post') {
+  if ((cleanUrl === '/api/applications' || cleanUrl === '/api/applications/') && method === 'post') {
     const apps = MockStore.getApplications()
     const jobId = data.jobId || data.job_id
     const job = MockStore.getJobs().find((j) => j.id === jobId) || MockStore.getJobs()[0]
@@ -217,8 +222,8 @@ function handleMockRequest(config) {
     return { data: newApp, status: 201 }
   }
 
-  if (url.includes('/api/applications/') && url.endsWith('/status') && (method === 'patch' || method === 'put')) {
-    const idStr = url.split('/api/applications/')[1].split('/status')[0]
+  if (cleanUrl.includes('/api/applications/') && cleanUrl.endsWith('/status') && (method === 'patch' || method === 'put')) {
+    const idStr = cleanUrl.split('/api/applications/')[1].split('/status')[0]
     const id = parseInt(idStr, 10)
     const apps = MockStore.getApplications()
     const app = apps.find((a) => a.id === id)
@@ -230,8 +235,8 @@ function handleMockRequest(config) {
     return { data: { message: 'Application status updated' }, status: 200 }
   }
 
-  if (url.startsWith('/api/applications/') && method === 'delete') {
-    const id = parseInt(url.split('/api/applications/')[1], 10)
+  if (cleanUrl.startsWith('/api/applications/') && method === 'delete') {
+    const id = parseInt(cleanUrl.split('/api/applications/')[1], 10)
     const apps = MockStore.getApplications().filter((a) => a.id !== id)
     MockStore.saveApplications(apps)
     return { data: { message: 'Application deleted successfully' }, status: 200 }
