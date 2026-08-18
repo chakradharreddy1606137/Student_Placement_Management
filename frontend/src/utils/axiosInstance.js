@@ -69,13 +69,26 @@ function handleMockRequest(config) {
 
   // 1. Auth Login
   if (url.includes('/api/auth/login') && method === 'post') {
+    const emailLower = (data?.email || '').toLowerCase()
+    let assignedRole = 'STUDENT'
+    if (
+      emailLower.includes('company') ||
+      emailLower.includes('recruiter') ||
+      emailLower.includes('google') ||
+      emailLower.includes('microsoft')
+    ) {
+      assignedRole = 'COMPANY'
+    } else if (emailLower.includes('admin') || emailLower.includes('officer')) {
+      assignedRole = 'ADMIN'
+    }
+
     const users = MockStore.getUsers()
     const foundUser =
-      users.find((u) => u.email.toLowerCase() === (data?.email || '').toLowerCase()) || {
+      users.find((u) => u.email.toLowerCase() === emailLower) || {
         id: Date.now(),
-        name: data?.email?.split('@')[0] || 'Demo User',
+        name: data?.email?.split('@')[0] || 'User',
         email: data?.email,
-        role: data?.role || (data?.email?.includes('company') ? 'COMPANY' : data?.email?.includes('admin') ? 'ADMIN' : 'STUDENT'),
+        role: assignedRole,
         token: `demo-token-${Date.now()}`,
       }
     return { data: foundUser, status: 200 }
@@ -231,16 +244,18 @@ function handleMockRequest(config) {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If backend is not available (network error, CORS, 404, or refused connection)
+    // If backend is not available (network error, CORS, 401/403/404, or refused connection)
     if (
-      !API_BASE_URL ||
+      !getActiveApiUrl() ||
       error.code === 'ERR_NETWORK' ||
       error.code === 'ECONNABORTED' ||
       !error.response ||
+      error.response.status === 401 ||
+      error.response.status === 403 ||
       error.response.status === 404 ||
       error.response.status >= 500
     ) {
-      console.warn('Backend server unreachable. Using interactive Demo Mode mock data.')
+      console.warn('Backend unavailable or credentials mismatched. Activating interactive Demo Mode fallback.')
       try {
         const mockResponse = handleMockRequest(error.config)
         return Promise.resolve(mockResponse)
