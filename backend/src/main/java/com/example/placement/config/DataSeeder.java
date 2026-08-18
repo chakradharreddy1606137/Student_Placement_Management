@@ -106,12 +106,12 @@ public class DataSeeder implements CommandLineRunner {
         amazonCompany.setWebsite("https://amazon.jobs");
         companyRepository.save(amazonCompany);
 
-        // 3. STUDENTS (Rishitha, Nitya, Bhargav, Srujan, Anurag)
-        createStudent("Rishitha", "rishitha@gmail.com", "rishitha123", "B.Tech", "Computer Science & Engineering", "9.40", "+91 98765 43210");
-        createStudent("Nitya", "nitya@gmail.com", "nitya123", "B.Tech", "Computer Science & Engineering", "9.10", "+91 98765 43211");
-        createStudent("Bhargav", "bhargav@gmail.com", "bhargav123", "B.Tech", "Computer Science & Engineering", "8.80", "+91 98765 43212");
-        createStudent("Srujan", "srujan@gmail.com", "srujan123", "B.Tech", "Information Technology", "8.70", "+91 98765 43213");
-        createStudent("Anurag", "anurag@gmail.com", "anurag123", "B.Tech", "Electronics & Communication", "8.90", "+91 98765 43214");
+        // 3. STUDENTS (Exact records from MySQL Workbench)
+        createStudent("Nitya", "nitya@gmail.com", "nitya123", "VNIT Nagpur", "B.Tech", "CSE", 2025, "8.50", "6300373746", "https://Nitya.com");
+        createStudent("Srujan", "srujan@gmail.com", "srujan123", "NIT Trichy", "B.Tech", "ECE", 2026, "7.15", "9177323879", "https://srujan.com");
+        createStudent("Bhargav", "bhargav@gmail.com", "bhargav123", "NIT Surat", "B.Tech", "ECE", 2026, "8.29", "8106821142", "https://Bhargav.com");
+        createStudent("Anurag", "anurag@gmail.com", "anurag123", "NIT Warangal", "BTech", "CSE", 2026, "7.50", "9063443206", "https://Anurag.com");
+        createStudent("Rishitha", "rishitha@gmail.com", "rishitha123", "VNIT Nagpur", "B.Tech", "CSE", 2025, "9.00", "8125622401", "https://rishitha.com");
 
         // 4. JOBS
         Job job1 = new Job();
@@ -188,7 +188,7 @@ public class DataSeeder implements CommandLineRunner {
         System.out.println("[DataSeeder] Successfully initialized database with Chakri, Harsha, Sai Charan, Indra, Rishitha, Nitya, Bhargav, Srujan, and Anurag!");
     }
 
-    private void createStudent(String name, String email, String password, String degree, String branch, String cgpa, String phone) {
+    private void createStudent(String name, String email, String password, String college, String degree, String branch, int graduationYear, String cgpa, String phone, String resumeUrl) {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
@@ -198,13 +198,13 @@ public class DataSeeder implements CommandLineRunner {
 
         Student student = new Student();
         student.setUser(user);
-        student.setCollege("National Institute of Technology");
+        student.setCollege(college);
         student.setDegree(degree);
         student.setBranch(branch);
-        student.setGraduationYear(2026);
+        student.setGraduationYear(graduationYear);
         student.setCgpa(new BigDecimal(cgpa));
         student.setPhone(phone);
-        student.setResumeUrl("https://example.com/" + name.toLowerCase() + "_resume.pdf");
+        student.setResumeUrl(resumeUrl);
         studentRepository.save(student);
     }
 }
