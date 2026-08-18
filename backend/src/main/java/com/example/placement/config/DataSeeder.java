@@ -105,7 +105,7 @@ public class DataSeeder implements CommandLineRunner {
 
         // 4. JOBS
         Job job1 = new Job();
-        job1.setCompany(googleCompany);
+        job1.setCompany(microsoftCompany);
         job1.setTitle("Software Development Engineer (SDE-1)");
         job1.setDescription("Build high-performance distributed backend services using Java, Spring Boot, and React.");
         job1.setLocation("Bengaluru, India");
@@ -118,7 +118,7 @@ public class DataSeeder implements CommandLineRunner {
         jobRepository.save(job1);
 
         Job job2 = new Job();
-        job2.setCompany(microsoftCompany);
+        job2.setCompany(perficientCompany);
         job2.setTitle("Cloud Solutions Engineer");
         job2.setDescription("Design and build scalable Azure enterprise cloud architectures.");
         job2.setLocation("Hyderabad, India");
@@ -131,7 +131,7 @@ public class DataSeeder implements CommandLineRunner {
         jobRepository.save(job2);
 
         Job job3 = new Job();
-        job3.setCompany(amazonCompany);
+        job3.setCompany(accentureCompany);
         job3.setTitle("AWS DevOps & Backend Engineer");
         job3.setDescription("Develop high-scale cloud services, CI/CD automation, and microservices.");
         job3.setLocation("Bengaluru, India");
