@@ -1,10 +1,22 @@
 # 🎓 Student Placement Management System
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)](https://chakradharreddy1606137.github.io/Student_Placement_Management/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+
+> 🌐 **Live Website Link:** **[https://chakradharreddy1606137.github.io/Student_Placement_Management/](https://chakradharreddy1606137.github.io/Student_Placement_Management/)**  
+> *Click the link above to test the interactive Student, Company, and Admin portals live in your browser.*
+
+---
+
 A full-stack web application that streamlines the campus placement process by connecting **Students**, **Companies**, and **Administrators** through a secure, role-based platform.
 
 ---
 
 ## 📋 Table of Contents
+
+- [🌐 Live Demo](https://chakradharreddy1606137.github.io/Student_Placement_Management/)
 
 - [Overview](#overview)
 - [Features](#features)
@@ -588,6 +600,7 @@ VITE_API_URL=https://your-backend.railway.app npm run build
 ```
 
 3. Deploy the `dist/` folder to:
+   - **GitHub Pages (Active)**: Automated via `.github/workflows/deploy.yml` → [Live Demo](https://chakradharreddy1606137.github.io/Student_Placement_Management/)
    - **Vercel** (recommended for Vite): `vercel --prod`
    - **Netlify**: drag-and-drop `dist/` folder
    - **AWS S3** + CloudFront
