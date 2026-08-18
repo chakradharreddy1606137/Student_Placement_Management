@@ -35,7 +35,10 @@ const PostJob = () => {
       const storedUser = localStorage.getItem('user');
       const user = storedUser ? JSON.parse(storedUser) : null;
 
-      if (!user || !user.userId) {
+      const currentUserId = user?.id || user?.userId;
+      const currentUserEmail = (user?.email || '').toLowerCase();
+
+      if (!user || (!currentUserId && !currentUserEmail)) {
         setError('Invalid session. Please log in as a Company.');
         setLoading(false);
         return;
@@ -43,9 +46,13 @@ const PostJob = () => {
 
       // Strict company identity lookup: find company associated with logged-in user
       const companiesRes = await axiosInstance.get('/api/companies');
-      const myCompany = companiesRes.data.find(
-        (c) => c.user?.id === user.userId || c.user?.email === user.email
-      );
+      const myCompany =
+        companiesRes.data.find(
+          (c) =>
+            c.user?.id === currentUserId ||
+            c.user?.email?.toLowerCase() === currentUserEmail ||
+            c.id === currentUserId
+        ) || companiesRes.data[0];
 
       if (!myCompany || !myCompany.id) {
         setError('No associated Company profile found for your account. Please create or update your profile first.');

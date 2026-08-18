@@ -47,7 +47,7 @@ const ApplyJob = () => {
 
       const user = JSON.parse(storedUser);
 
-      if (!user.userId) {
+      if (!user || (!user.userId && !user.id && !user.email)) {
         setError('User session is invalid. Please login again.');
         setApplying(false);
         return;

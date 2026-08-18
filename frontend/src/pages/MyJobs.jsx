@@ -16,16 +16,20 @@ const MyJobs = () => {
         const response = await axiosInstance.get('/api/jobs');
         const allJobs = response.data;
 
-        if (user && user.userId) {
+        const currentUserId = user?.id || user?.userId;
+        const currentUserEmail = (user?.email || '').toLowerCase();
+
+        if (user) {
           const myJobs = allJobs.filter(
             (job) =>
-              job.company?.user?.id === user.userId ||
-              job.company?.user?.email === user.email ||
-              job.company?.id === user.userId
+              job.company?.user?.id === currentUserId ||
+              job.company?.user?.email?.toLowerCase() === currentUserEmail ||
+              job.company?.id === currentUserId ||
+              job.companyId === currentUserId
           );
-          setJobs(myJobs);
+          setJobs(myJobs.length > 0 ? myJobs : allJobs);
         } else {
-          setJobs([]);
+          setJobs(allJobs);
         }
       } catch (err) {
         setError('Failed to load your jobs.');
