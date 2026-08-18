@@ -40,6 +40,8 @@ jobs:
 
       - name: Build Frontend Application
         working-directory: ./frontend
+        env:
+          VITE_API_URL: https://student-placement-management.onrender.com
         run: npm run build
 
       - name: Setup GitHub Pages
