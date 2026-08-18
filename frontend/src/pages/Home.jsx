@@ -43,9 +43,9 @@ function Home() {
     let user
     if (role === 'STUDENT') {
       user = {
-        id: 1,
-        name: 'Alex Sharma (Demo Student)',
-        email: 'student@example.com',
+        id: 5,
+        name: 'Rishitha (Student)',
+        email: 'rishitha@gmail.com',
         role: 'STUDENT',
         token: 'demo-student-token-123',
       }
@@ -56,8 +56,8 @@ function Home() {
     } else if (role === 'COMPANY') {
       user = {
         id: 2,
-        name: 'Google Campus Team (Demo)',
-        email: 'recruiter@google.com',
+        name: 'Harsha (Google Recruiter)',
+        email: 'harsha@gmail.com',
         role: 'COMPANY',
         token: 'demo-company-token-123',
       }
@@ -67,9 +67,9 @@ function Home() {
       navigate('/company/dashboard')
     } else if (role === 'ADMIN') {
       user = {
-        id: 3,
-        name: 'Placement Officer (Demo Admin)',
-        email: 'admin@example.com',
+        id: 1,
+        name: 'Chakri (Placement Admin)',
+        email: 'chakri@gmail.com',
         role: 'ADMIN',
         token: 'demo-admin-token-123',
       }
