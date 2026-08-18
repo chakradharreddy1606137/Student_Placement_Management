@@ -202,52 +202,6 @@ function Login({ role }) {
         </form>
 
         {/* Demo Quick Fill for Live GitHub Pages Visitors */}
-        <div
-          style={{
-            marginTop: '20px',
-            padding: '14px',
-            backgroundColor: '#0f172a',
-            border: '1px dashed #475569',
-            borderRadius: '8px',
-            textAlign: 'center',
-          }}
-        >
-          <p style={{ margin: '0 0 10px 0', fontSize: '12px', color: '#94a3b8', fontWeight: '500' }}>
-            ⚡ Live Demo Visitor? Fill test credentials:
-          </p>
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-            <button
-              type="button"
-              onClick={() => {
-                const targetEmail =
-                  role?.toUpperCase() === 'COMPANY'
-                    ? 'recruiter@google.com'
-                    : role?.toUpperCase() === 'ADMIN'
-                    ? 'admin@example.com'
-                    : 'rishitha@gmail.com'
-                const targetPassword =
-                  role?.toUpperCase() === 'STUDENT' || !role
-                    ? 'rishitha123'
-                    : 'password123'
-                setEmail(targetEmail)
-                setPassword(targetPassword)
-              }}
-              style={{
-                backgroundColor: '#334155',
-                color: '#f8fafc',
-                border: '1px solid #475569',
-                borderRadius: '6px',
-                padding: '6px 12px',
-                fontSize: '12px',
-                cursor: 'pointer',
-                fontWeight: '600',
-              }}
-            >
-              Fill {role || 'Demo'} Credentials
-            </button>
-          </div>
-        </div>
-
         <div style={{ textAlign: 'center', marginTop: '24px' }}>
           <Link
             to="/"
