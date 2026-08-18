@@ -9,6 +9,7 @@ const ApplyJob = () => {
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
   const [applied, setApplied] = useState(false);
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -16,6 +17,19 @@ const ApplyJob = () => {
       try {
         const response = await axiosInstance.get(`/api/jobs/${id}`);
         setJob(response.data);
+
+        // Check if student already applied
+        try {
+          const appsRes = await axiosInstance.get('/api/applications/my');
+          const isApplied = (appsRes.data || []).some(
+            (a) => a.jobId === Number(id) || a.job?.id === Number(id)
+          );
+          if (isApplied) {
+            setAlreadyApplied(true);
+          }
+        } catch (e) {
+          // ignore
+        }
       } catch (err) {
         if (err.response?.status === 404) {
           setError('Job not found.');
@@ -124,6 +138,20 @@ const ApplyJob = () => {
               </Link>
               <Link to="/student/dashboard">
                 <button style={{ backgroundColor: '#475569' }}>Back to Dashboard</button>
+              </Link>
+            </div>
+          </div>
+        ) : alreadyApplied ? (
+          <div style={{ backgroundColor: 'rgba(251, 191, 36, 0.15)', border: '1px solid #f59e0b', borderRadius: '12px', padding: '24px', textAlign: 'center', margin: '20px 0' }}>
+            <div style={{ fontSize: '36px', marginBottom: '10px' }}>📋</div>
+            <h3 style={{ color: '#fbbf24', margin: '0 0 8px 0' }}>Already Applied</h3>
+            <p style={{ color: '#cbd5e1', margin: '0 0 20px 0' }}>You have already submitted an application for <strong>{job?.title}</strong> at <strong>{companyName}</strong>.</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+              <Link to="/student/applications">
+                <button style={{ backgroundColor: '#3b82f6' }}>Track My Applications</button>
+              </Link>
+              <Link to="/student/jobs">
+                <button style={{ backgroundColor: '#475569' }}>Browse Other Jobs</button>
               </Link>
             </div>
           </div>

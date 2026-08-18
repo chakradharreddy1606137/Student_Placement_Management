@@ -83,7 +83,12 @@ function handleMockRequest(config) {
       emailLower.includes('indra')
     ) {
       assignedRole = 'COMPANY'
-    } else if (emailLower.includes('admin') || emailLower.includes('chakri') || emailLower.includes('officer')) {
+    } else if (
+      emailLower.includes('admin') ||
+      emailLower.includes('kcr1606137') ||
+      emailLower.includes('chakri') ||
+      emailLower.includes('officer')
+    ) {
       assignedRole = 'ADMIN'
     }
 
@@ -196,7 +201,21 @@ function handleMockRequest(config) {
   // 5. Application Endpoints
   if ((cleanUrl === '/api/applications/my' || cleanUrl.startsWith('/api/applications/my')) && method === 'get') {
     const apps = MockStore.getApplications()
-    return { data: apps, status: 200 }
+    const currentStudent =
+      MockStore.getStudents().find(
+        (s) =>
+          s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
+          s.userId === currentUser?.id ||
+          s.user?.name?.toLowerCase() === currentUser?.name?.toLowerCase()
+      ) || MockStore.getStudents()[0]
+
+    const myApps = apps.filter(
+      (a) =>
+        a.studentId === currentStudent?.id ||
+        a.student?.id === currentStudent?.id ||
+        a.student?.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase()
+    )
+    return { data: myApps, status: 200 }
   }
 
   if ((cleanUrl === '/api/applications' || cleanUrl === '/api/applications/') && method === 'get') {
@@ -205,13 +224,34 @@ function handleMockRequest(config) {
 
   if ((cleanUrl === '/api/applications' || cleanUrl === '/api/applications/') && method === 'post') {
     const apps = MockStore.getApplications()
-    const jobId = data.jobId || data.job_id
+    const jobId = data.jobId || data.job_id || data.job?.id
     const job = MockStore.getJobs().find((j) => j.id === jobId) || MockStore.getJobs()[0]
-    const student = MockStore.getStudents()[0]
+    const currentStudent =
+      MockStore.getStudents().find(
+        (s) =>
+          s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
+          s.userId === currentUser?.id ||
+          s.user?.name?.toLowerCase() === currentUser?.name?.toLowerCase()
+      ) || MockStore.getStudents()[0]
+
+    // Prevent duplicate application to same job
+    const alreadyApplied = apps.some(
+      (a) =>
+        (a.studentId === currentStudent?.id || a.student?.id === currentStudent?.id) &&
+        (a.jobId === job.id || a.job?.id === job.id)
+    )
+
+    if (alreadyApplied) {
+      return {
+        data: { message: 'You have already applied for this position.' },
+        status: 400,
+      }
+    }
+
     const newApp = {
       id: Date.now(),
-      studentId: student.id,
-      student,
+      studentId: currentStudent.id,
+      student: currentStudent,
       jobId: job.id,
       job,
       status: 'PENDING',

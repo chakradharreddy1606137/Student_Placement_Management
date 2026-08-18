@@ -1,23 +1,24 @@
 // Interactive Mock Storage for Live GitHub Pages Demo Mode
 
 const STORAGE_KEYS = {
-  USERS: 'spm_demo_users_v4',
-  STUDENTS: 'spm_demo_students_v4',
-  COMPANIES: 'spm_demo_companies_v4',
-  JOBS: 'spm_demo_jobs_v4',
-  APPLICATIONS: 'spm_demo_applications_v4',
+  USERS: 'spm_demo_users_v6',
+  STUDENTS: 'spm_demo_students_v6',
+  COMPANIES: 'spm_demo_companies_v6',
+  JOBS: 'spm_demo_jobs_v6',
+  APPLICATIONS: 'spm_demo_applications_v6',
 }
 
 const DEFAULT_USERS = [
-  { id: 1, name: 'Chakri (Admin)', email: 'chakri@gmail.com', role: 'ADMIN', token: 'demo-admin-jwt-token' },
-  { id: 2, name: 'Harsha (Google Recruiter)', email: 'harsha@gmail.com', role: 'COMPANY', token: 'demo-harsha-jwt-token' },
-  { id: 3, name: 'Sai Charan (Microsoft Recruiter)', email: 'saicharan@gmail.com', role: 'COMPANY', token: 'demo-saicharan-jwt-token' },
-  { id: 4, name: 'Indra (Amazon Recruiter)', email: 'indra@gmail.com', role: 'COMPANY', token: 'demo-indra-jwt-token' },
-  { id: 5, name: 'Rishitha (Student)', email: 'rishitha@gmail.com', role: 'STUDENT', token: 'demo-rishitha-jwt-token' },
-  { id: 6, name: 'Nitya (Student)', email: 'nitya@gmail.com', role: 'STUDENT', token: 'demo-nitya-jwt-token' },
-  { id: 7, name: 'Bhargav (Student)', email: 'bhargav@gmail.com', role: 'STUDENT', token: 'demo-bhargav-jwt-token' },
-  { id: 8, name: 'Srujan (Student)', email: 'srujan@gmail.com', role: 'STUDENT', token: 'demo-srujan-jwt-token' },
-  { id: 9, name: 'Anurag (Student)', email: 'anurag@gmail.com', role: 'STUDENT', token: 'demo-anurag-jwt-token' },
+  { id: 1, name: 'Chakri (Admin)', email: 'kcr1606137@gmail.com', role: 'ADMIN', token: 'demo-admin-jwt-token' },
+  { id: 101, name: 'Chakri', email: 'chakri@gmail.com', role: 'ADMIN', token: 'demo-admin-token-2' },
+  { id: 2, name: 'Sai Charan (Perficient)', email: 'saicharan@gmail.com', role: 'COMPANY', token: 'demo-saicharan-jwt-token' },
+  { id: 3, name: 'Harsha (Microsoft)', email: 'harsha@gmail.com', role: 'COMPANY', token: 'demo-harsha-jwt-token' },
+  { id: 4, name: 'Bhargav (Student)', email: 'bhargav@gmail.com', role: 'STUDENT', token: 'demo-bhargav-jwt-token' },
+  { id: 5, name: 'Anurag (Student)', email: 'anurag@gmail.com', role: 'STUDENT', token: 'demo-anurag-jwt-token' },
+  { id: 6, name: 'Srujan (Student)', email: 'srujan@gmail.com', role: 'STUDENT', token: 'demo-srujan-jwt-token' },
+  { id: 7, name: 'Indra (Accenture)', email: 'indra@gmail.com', role: 'COMPANY', token: 'demo-indra-jwt-token' },
+  { id: 9, name: 'Rishitha (Student)', email: 'rishitha@gmail.com', role: 'STUDENT', token: 'demo-rishitha-jwt-token' },
+  { id: 10, name: 'Nitya (Student)', email: 'nitya@gmail.com', role: 'STUDENT', token: 'demo-nitya-jwt-token' },
 ]
 
 const DEFAULT_STUDENTS = [
@@ -376,8 +377,8 @@ const DEFAULT_APPLICATIONS = [
     id: 6,
     studentId: 5,
     student: DEFAULT_STUDENTS[4],
-    jobId: 1,
-    job: DEFAULT_JOBS[0],
+    jobId: 2,
+    job: DEFAULT_JOBS[1],
     status: 'PENDING',
     appliedAt: '2026-08-16T12:30:00',
   },

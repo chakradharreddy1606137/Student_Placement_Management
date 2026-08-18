@@ -7,6 +7,7 @@ const JobDetails = () => {
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -14,6 +15,17 @@ const JobDetails = () => {
       try {
         const response = await axiosInstance.get(`/api/jobs/${id}`);
         setJob(response.data);
+
+        // Check if student already applied
+        try {
+          const appsRes = await axiosInstance.get('/api/applications/my');
+          const isApplied = (appsRes.data || []).some(
+            (a) => a.jobId === Number(id) || a.job?.id === Number(id)
+          );
+          setAlreadyApplied(isApplied);
+        } catch (e) {
+          // ignore
+        }
       } catch (err) {
         if (err.response?.status === 404) {
           setError('Job not found.');
@@ -129,11 +141,19 @@ const JobDetails = () => {
           </div>
         </div>
 
-        <Link to={`/student/jobs/${id}/apply`} style={{ textDecoration: 'none' }}>
-          <button style={{ width: '100%', padding: '14px', fontSize: '16px', backgroundColor: '#10b981' }}>
-            🚀 Apply for this Position
-          </button>
-        </Link>
+        {alreadyApplied ? (
+          <div style={{ textAlign: 'center', padding: '12px', backgroundColor: 'rgba(52, 211, 153, 0.1)', border: '1px solid #059669', borderRadius: '8px' }}>
+            <p style={{ margin: 0, color: '#34d399', fontWeight: 'bold', fontSize: '15px' }}>
+              ✓ You have already applied for this position
+            </p>
+          </div>
+        ) : (
+          <Link to={`/student/jobs/${id}/apply`} style={{ textDecoration: 'none' }}>
+            <button style={{ width: '100%', padding: '14px', fontSize: '16px', backgroundColor: '#10b981' }}>
+              🚀 Apply for this Position
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );
