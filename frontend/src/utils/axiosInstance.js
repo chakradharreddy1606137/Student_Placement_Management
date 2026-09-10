@@ -18,13 +18,26 @@ export const getActiveApiUrl = () => {
   return ''
 }
 
+let backendState = {
+  isAvailable: true,
+  lastChecked: 0,
+}
+
 const axiosInstance = axios.create({
   baseURL: getActiveApiUrl() || undefined,
-  timeout: 5000,
+  timeout: 1200, // Fast 1.2s timeout to eliminate 5s UI hang
 })
 
 axiosInstance.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    // If backend was recently detected as unreachable, immediately serve via in-memory mock (0ms lag)
+    if (backendState.isAvailable === false && Date.now() - backendState.lastChecked < 20000) {
+      config.adapter = async () => {
+        return handleMockRequest(config)
+      }
+      return config
+    }
+
     const currentBaseUrl = getActiveApiUrl()
     if (currentBaseUrl) {
       config.baseURL = currentBaseUrl
@@ -372,7 +385,11 @@ function handleMockRequest(config) {
 
 // Interceptor: Fallback to interactive MockStore only if real backend is unreachable
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    backendState.isAvailable = true
+    backendState.lastChecked = Date.now()
+    return response
+  },
   (error) => {
     // If token is expired / 401 Unauthorized on a protected endpoint, clear session and redirect
     if (error.response && error.response.status === 401 && !error.config?.url?.includes('/api/auth/login')) {
@@ -399,6 +416,8 @@ axiosInstance.interceptors.response.use(
       error.response.status === 404 ||
       error.response.status >= 500
     ) {
+      backendState.isAvailable = false
+      backendState.lastChecked = Date.now()
       try {
         const mockResponse = handleMockRequest(error.config)
         return Promise.resolve(mockResponse)
