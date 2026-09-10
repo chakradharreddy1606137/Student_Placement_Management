@@ -1,25 +1,54 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
+import { MockStore } from '../utils/mockData';
 
 const MyApplications = () => {
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [applications, setApplications] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const user = JSON.parse(stored);
+        const apps = MockStore.getApplications();
+        const students = MockStore.getStudents();
+        const curStudent = students.find(
+          (s) =>
+            s.user?.email?.toLowerCase() === user.email?.toLowerCase() ||
+            s.userId === user.id ||
+            s.user?.id === user.id
+        );
+        if (curStudent) {
+          return apps.filter((a) => a.studentId === curStudent.id || a.student?.id === curStudent.id);
+        }
+      }
+    } catch (e) {}
+    return [];
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
     const fetchApplications = async () => {
       try {
         const response = await axiosInstance.get('/api/applications/my');
-        setApplications(response.data);
+        if (isMounted && response.data) {
+          setApplications(response.data);
+          setError('');
+        }
       } catch (err) {
-        setError('Failed to load applications.');
+        if (isMounted && applications.length === 0) {
+          setError('Failed to load applications.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchApplications();
+    return () => { isMounted = false; };
   }, []);
 
   const getStatusColor = (status) => {

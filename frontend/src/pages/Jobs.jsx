@@ -1,25 +1,41 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
+import { MockStore } from '../utils/mockData';
 
 const Jobs = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState(() => {
+    try {
+      const list = MockStore.getJobs();
+      if (Array.isArray(list) && list.length > 0) return list;
+    } catch (e) {}
+    return [];
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
     const fetchJobs = async () => {
       try {
         const response = await axiosInstance.get('/api/jobs');
-        setJobs(response.data);
+        if (isMounted && response.data) {
+          setJobs(response.data);
+          setError('');
+        }
       } catch (err) {
-        setError('Failed to fetch jobs.');
+        if (isMounted && jobs.length === 0) {
+          setError('Failed to fetch jobs.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchJobs();
+    return () => { isMounted = false; };
   }, []);
 
   return (

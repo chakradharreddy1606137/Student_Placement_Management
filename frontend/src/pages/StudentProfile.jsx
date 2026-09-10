@@ -1,29 +1,70 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
+import { MockStore } from '../utils/mockData';
 
 const StudentProfile = () => {
-  const [student, setStudent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [student, setStudent] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const user = JSON.parse(stored);
+        const students = MockStore.getStudents();
+        const found = students.find(
+          (s) =>
+            s.user?.email?.toLowerCase() === user.email?.toLowerCase() ||
+            s.userId === user.id ||
+            s.user?.id === user.id
+        );
+        if (found) return found;
+        if (user.email) {
+          return {
+            id: user.id || 1,
+            user: { name: user.name || user.email.split('@')[0], email: user.email },
+            college: 'National Institute of Technology',
+            degree: 'B.Tech',
+            branch: 'Computer Science',
+            graduationYear: 2025,
+            cgpa: 8.5,
+            phone: 'N/A',
+            resumeUrl: '',
+          };
+        }
+      }
+    } catch (e) {
+      // fallback
+    }
+    return null;
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProfile = async () => {
       try {
         const response = await axiosInstance.get('/api/students/me');
-        setStudent(response.data);
+        if (isMounted && response.data) {
+          setStudent(response.data);
+          setError('');
+        }
       } catch (err) {
-        if (err.response && err.response.status === 403) {
-          setError('Access denied: insufficient permissions');
-        } else {
-          setError('Failed to load profile');
+        if (isMounted) {
+          if (err.response && err.response.status === 403) {
+            setError('Access denied: insufficient permissions');
+          } else if (!student) {
+            setError('Failed to load profile');
+          }
         }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchProfile();
+    return () => { isMounted = false; };
   }, []);
 
   if (loading) {

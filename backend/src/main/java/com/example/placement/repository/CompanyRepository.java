@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.placement.model.Company;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    @org.springframework.data.jpa.repository.Query("SELECT c FROM Company c WHERE c.user.email = :email")
+    @org.springframework.data.jpa.repository.Query("SELECT c FROM Company c WHERE LOWER(c.user.email) = LOWER(:email)")
     Optional<Company> findByUserEmail(@org.springframework.data.repository.query.Param("email") String email);
 
     @org.springframework.data.jpa.repository.Query("SELECT c FROM Company c WHERE c.user.id = :userId")

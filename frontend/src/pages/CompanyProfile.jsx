@@ -1,45 +1,83 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
+import { MockStore } from '../utils/mockData';
 
 const CompanyProfile = () => {
-  const [company, setCompany] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [company, setCompany] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const user = JSON.parse(stored);
+        const companies = MockStore.getCompanies();
+        const found = companies.find(
+          (c) =>
+            c.user?.email?.toLowerCase() === user.email?.toLowerCase() ||
+            c.userId === user.id ||
+            c.user?.id === user.id
+        );
+        if (found) return found;
+        if (user.email) {
+          return {
+            id: user.id || 1,
+            companyName: user.name || 'Corporate Partner',
+            user: { name: user.name, email: user.email },
+            description: 'Technology solutions and engineering services',
+            location: 'India',
+            website: 'https://company.com',
+          };
+        }
+      }
+    } catch (e) {
+      // fallback
+    }
+    return null;
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
-    companyName: '',
-    description: '',
-    location: '',
-    website: '',
+  const [editData, setEditData] = useState(() => {
+    return {
+      companyName: company?.companyName || '',
+      description: company?.description || '',
+      location: company?.location || '',
+      website: company?.website || '',
+    };
   });
   const [saveSuccess, setSaveSuccess] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProfile = async () => {
       try {
         const response = await axiosInstance.get('/api/companies/me');
-        setCompany(response.data);
-        if (response.data) {
+        if (isMounted && response.data) {
+          setCompany(response.data);
           setEditData({
             companyName: response.data.companyName || '',
             description: response.data.description || '',
             location: response.data.location || '',
             website: response.data.website || '',
           });
+          setError('');
         }
       } catch (err) {
-        if (err.response && err.response.status === 403) {
-          setError('Access denied: insufficient permissions');
-        } else {
-          setError('Failed to load company profile');
+        if (isMounted) {
+          if (err.response && err.response.status === 403) {
+            setError('Access denied: insufficient permissions');
+          } else if (!company) {
+            setError('Failed to load company profile');
+          }
         }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchProfile();
+    return () => { isMounted = false; };
   }, []);
 
   const handleSave = async (e) => {

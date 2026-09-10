@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.example.placement.model.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    @Query("SELECT s FROM Student s LEFT JOIN FETCH s.skills WHERE s.user.email = :email")
+    @Query("SELECT s FROM Student s LEFT JOIN FETCH s.skills WHERE LOWER(s.user.email) = LOWER(:email)")
     Optional<Student> findByUserEmail(@Param("email") String email);
 
     @Query("SELECT s FROM Student s WHERE s.user.id = :userId")

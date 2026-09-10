@@ -1,43 +1,85 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
+import { MockStore } from '../utils/mockData';
 
 const JobDetails = () => {
   const { id } = useParams();
 
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const [job, setJob] = useState(() => {
+    try {
+      const allJobs = MockStore.getJobs();
+      return allJobs.find((j) => String(j.id) === String(id)) || null;
+    } catch (e) {
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(false);
+  const [alreadyApplied, setAlreadyApplied] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const user = JSON.parse(stored);
+        const apps = MockStore.getApplications();
+        const students = MockStore.getStudents();
+        const curStudent = students.find(
+          (s) =>
+            s.user?.email?.toLowerCase() === user.email?.toLowerCase() ||
+            s.userId === user.id ||
+            s.user?.id === user.id
+        );
+        if (curStudent) {
+          return apps.some(
+            (a) =>
+              (a.studentId === curStudent.id || a.student?.id === curStudent.id) &&
+              (String(a.jobId) === String(id) || String(a.job?.id) === String(id))
+          );
+        }
+      }
+    } catch (e) {}
+    return false;
+  });
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
     const fetchJob = async () => {
       try {
         const response = await axiosInstance.get(`/api/jobs/${id}`);
-        setJob(response.data);
+        if (isMounted && response.data) {
+          setJob(response.data);
+          setError('');
+        }
 
         // Check if student already applied
         try {
           const appsRes = await axiosInstance.get('/api/applications/my');
-          const isApplied = (appsRes.data || []).some(
-            (a) => a.jobId === Number(id) || a.job?.id === Number(id)
-          );
-          setAlreadyApplied(isApplied);
+          if (isMounted && Array.isArray(appsRes.data)) {
+            const isApplied = appsRes.data.some(
+              (a) => a.jobId === Number(id) || a.job?.id === Number(id)
+            );
+            setAlreadyApplied(isApplied);
+          }
         } catch (e) {
           // ignore
         }
       } catch (err) {
-        if (err.response?.status === 404) {
-          setError('Job not found.');
-        } else {
-          setError('Failed to fetch job details.');
+        if (isMounted && !job) {
+          if (err.response?.status === 404) {
+            setError('Job not found.');
+          } else {
+            setError('Failed to fetch job details.');
+          }
         }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchJob();
+    return () => { isMounted = false; };
   }, [id]);
 
   if (loading) {
