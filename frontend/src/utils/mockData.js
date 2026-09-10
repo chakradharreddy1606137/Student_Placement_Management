@@ -1,25 +1,44 @@
 // Interactive Mock Storage for Live GitHub Pages Demo Mode
 
 const STORAGE_KEYS = {
-  USERS: 'spm_demo_users_v6',
-  STUDENTS: 'spm_demo_students_v6',
-  COMPANIES: 'spm_demo_companies_v6',
-  JOBS: 'spm_demo_jobs_v6',
-  APPLICATIONS: 'spm_demo_applications_v6',
+  USERS: 'spm_auth_v2_users',
+  STUDENTS: 'spm_auth_v2_students',
+  COMPANIES: 'spm_auth_v2_companies',
+  JOBS: 'spm_clean_production_v1_jobs',
+  APPLICATIONS: 'spm_clean_production_v1_applications',
 }
 
 const DEFAULT_USERS = [
-  { id: 1, name: 'Chakri (Admin)', email: 'kcr1606137@gmail.com', role: 'ADMIN', token: 'demo-admin-jwt-token' },
-  { id: 101, name: 'Chakri', email: 'chakri@gmail.com', role: 'ADMIN', token: 'demo-admin-token-2' },
-  { id: 2, name: 'Sai Charan (Perficient)', email: 'saicharan@gmail.com', role: 'COMPANY', token: 'demo-saicharan-jwt-token' },
-  { id: 3, name: 'Harsha (Microsoft)', email: 'harsha@gmail.com', role: 'COMPANY', token: 'demo-harsha-jwt-token' },
-  { id: 4, name: 'Bhargav (Student)', email: 'bhargav@gmail.com', role: 'STUDENT', token: 'demo-bhargav-jwt-token' },
-  { id: 5, name: 'Anurag (Student)', email: 'anurag@gmail.com', role: 'STUDENT', token: 'demo-anurag-jwt-token' },
-  { id: 6, name: 'Srujan (Student)', email: 'srujan@gmail.com', role: 'STUDENT', token: 'demo-srujan-jwt-token' },
-  { id: 7, name: 'Indra (Accenture)', email: 'indra@gmail.com', role: 'COMPANY', token: 'demo-indra-jwt-token' },
-  { id: 9, name: 'Rishitha (Student)', email: 'rishitha@gmail.com', role: 'STUDENT', token: 'demo-rishitha-jwt-token' },
-  { id: 10, name: 'Nitya (Student)', email: 'nitya@gmail.com', role: 'STUDENT', token: 'demo-nitya-jwt-token' },
+  { id: 1, name: 'Chakri (Admin)', email: 'chakri@gmail.com', password: 'chakri123', role: 'ADMIN', token: 'demo-admin-jwt-token' },
+  { id: 2, name: 'Harsha (Microsoft)', email: 'harsha@gmail.com', password: 'harsha123', role: 'COMPANY', token: 'demo-harsha-jwt-token' },
+  { id: 3, name: 'Sai Charan (Perficient)', email: 'saicharan@gmail.com', password: 'saicharan123', role: 'COMPANY', token: 'demo-saicharan-jwt-token' },
+  { id: 4, name: 'Indra (Accenture)', email: 'indra@gmail.com', password: 'indra123', role: 'COMPANY', token: 'demo-indra-jwt-token' },
+  { id: 5, name: 'Rishitha (Student)', email: 'rishitha@gmail.com', password: 'rishitha123', role: 'STUDENT', token: 'demo-rishitha-jwt-token' },
+  { id: 6, name: 'Nitya (Student)', email: 'nitya@gmail.com', password: 'nitya123', role: 'STUDENT', token: 'demo-nitya-jwt-token' },
+  { id: 7, name: 'Bhargav (Student)', email: 'bhargav@gmail.com', password: 'bhargav123', role: 'STUDENT', token: 'demo-bhargav-jwt-token' },
+  { id: 8, name: 'Srujan (Student)', email: 'srujan@gmail.com', password: 'srujan123', role: 'STUDENT', token: 'demo-srujan-jwt-token' },
+  { id: 9, name: 'Anurag (Student)', email: 'anurag@gmail.com', password: 'anurag123', role: 'STUDENT', token: 'demo-anurag-jwt-token' },
+  { id: 10, name: 'Chakri (Admin)', email: 'kcr1606137@gmail.com', password: 'chakri123', role: 'ADMIN', token: 'demo-admin-token-2' },
 ]
+
+export const PORTAL_CREDENTIALS = {
+  ADMIN: [
+    { name: 'Chakri (Admin)', email: 'chakri@gmail.com', password: 'chakri123', role: 'ADMIN' },
+    { name: 'Chakri (Admin)', email: 'kcr1606137@gmail.com', password: 'chakri123', role: 'ADMIN' },
+  ],
+  COMPANY: [
+    { name: 'Harsha (Microsoft)', email: 'harsha@gmail.com', password: 'harsha123', company: 'Microsoft', role: 'COMPANY' },
+    { name: 'Sai Charan (Perficient)', email: 'saicharan@gmail.com', password: 'saicharan123', company: 'Perficient', role: 'COMPANY' },
+    { name: 'Indra (Accenture)', email: 'indra@gmail.com', password: 'indra123', company: 'Accenture', role: 'COMPANY' },
+  ],
+  STUDENT: [
+    { name: 'Nitya', email: 'nitya@gmail.com', password: 'nitya123', college: 'VNIT Nagpur', branch: 'CSE', role: 'STUDENT' },
+    { name: 'Srujan', email: 'srujan@gmail.com', password: 'srujan123', college: 'NIT Trichy', branch: 'ECE', role: 'STUDENT' },
+    { name: 'Bhargav', email: 'bhargav@gmail.com', password: 'bhargav123', college: 'NIT Surat', branch: 'ECE', role: 'STUDENT' },
+    { name: 'Anurag', email: 'anurag@gmail.com', password: 'anurag123', college: 'NIT Warangal', branch: 'CSE', role: 'STUDENT' },
+    { name: 'Rishitha', email: 'rishitha@gmail.com', password: 'rishitha123', college: 'VNIT Nagpur', branch: 'CSE', role: 'STUDENT' },
+  ],
+}
 
 const DEFAULT_STUDENTS = [
   {
@@ -88,8 +107,8 @@ const DEFAULT_COMPANIES = [
   {
     id: 1,
     userId: 2,
-    companyName: 'Microsoft',
     user: { id: 2, name: 'Harsha', email: 'harsha@gmail.com' },
+    companyName: 'Microsoft',
     location: 'Hyderabad',
     website: 'https://www.microsoft.com/en-in/',
     description: 'Software development company',
@@ -97,8 +116,8 @@ const DEFAULT_COMPANIES = [
   {
     id: 2,
     userId: 3,
-    companyName: 'Perficient',
     user: { id: 3, name: 'Sai Charan', email: 'saicharan@gmail.com' },
+    companyName: 'Perficient',
     location: 'Nagpur',
     website: 'https://www.perficient.com/',
     description: 'Associate Technical Consultant',
@@ -106,8 +125,8 @@ const DEFAULT_COMPANIES = [
   {
     id: 3,
     userId: 4,
-    companyName: 'Accenture',
     user: { id: 4, name: 'Indra', email: 'indra@gmail.com' },
+    companyName: 'Accenture',
     location: 'Bangalore',
     website: 'https://www.accenture.com/in-en',
     description: 'AI Engineer',
@@ -120,14 +139,14 @@ const DEFAULT_JOBS = [
     companyId: 1,
     company: DEFAULT_COMPANIES[0],
     title: 'Java Backend Developer',
-    description: 'Design and develop scalable microservices, REST APIs, and distributed architectures in Java and Spring Boot.',
+    description: 'Design and develop scalable microservices, REST APIs, and distributed architectures.',
     location: 'Hyderabad',
     salary: 1450000,
     jobType: 'FULL_TIME',
     minimumCgpa: 7.50,
     experienceRequired: '0-2 years',
     deadline: '2026-09-30',
-    createdAt: '2026-08-15T10:00:00',
+    createdAt: '2026-08-01T10:00:00',
   },
   {
     id: 2,
@@ -140,8 +159,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.00,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-30',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-15',
+    createdAt: '2026-08-02T11:00:00',
   },
   {
     id: 3,
@@ -154,8 +173,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 8.00,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-30',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-20',
+    createdAt: '2026-08-03T09:30:00',
   },
   {
     id: 4,
@@ -168,8 +187,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.50,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-10',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-09-25',
+    createdAt: '2026-08-05T14:00:00',
   },
   {
     id: 5,
@@ -182,8 +201,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 8.00,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-30',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-31',
+    createdAt: '2026-08-06T10:15:00',
   },
   {
     id: 6,
@@ -196,8 +215,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.00,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-10',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-09-28',
+    createdAt: '2026-08-07T12:00:00',
   },
   {
     id: 7,
@@ -210,8 +229,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 8.50,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-30',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-11-15',
+    createdAt: '2026-08-08T16:30:00',
   },
   {
     id: 8,
@@ -224,8 +243,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.50,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-10',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-10',
+    createdAt: '2026-08-10T10:00:00',
   },
   {
     id: 9,
@@ -238,8 +257,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 8.00,
     experienceRequired: '0-2 years',
-    deadline: '2026-08-30',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-11-30',
+    createdAt: '2026-08-11T15:00:00',
   },
   {
     id: 10,
@@ -252,8 +271,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.00,
     experienceRequired: '0',
-    deadline: '2026-09-05',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-05',
+    createdAt: '2026-08-12T09:00:00',
   },
   {
     id: 11,
@@ -266,8 +285,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 6.50,
     experienceRequired: '0',
-    deadline: '2026-09-05',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-12',
+    createdAt: '2026-08-12T11:30:00',
   },
   {
     id: 12,
@@ -280,8 +299,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 8.00,
     experienceRequired: '0',
-    deadline: '2026-08-14',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-11-05',
+    createdAt: '2026-08-13T14:00:00',
   },
   {
     id: 13,
@@ -294,8 +313,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.50,
     experienceRequired: '0',
-    deadline: '2026-09-05',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-25',
+    createdAt: '2026-08-14T10:00:00',
   },
   {
     id: 14,
@@ -308,8 +327,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 6.50,
     experienceRequired: '0',
-    deadline: '2026-09-05',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-10-18',
+    createdAt: '2026-08-15T13:00:00',
   },
   {
     id: 15,
@@ -322,8 +341,8 @@ const DEFAULT_JOBS = [
     jobType: 'FULL_TIME',
     minimumCgpa: 7.00,
     experienceRequired: '0',
-    deadline: '2026-09-05',
-    createdAt: '2026-08-15T10:00:00',
+    deadline: '2026-11-20',
+    createdAt: '2026-08-16T16:00:00',
   },
 ]
 
@@ -406,7 +425,43 @@ function saveToStorage(key, data) {
 }
 
 export const MockStore = {
-  getUsers: () => getFromStorage(STORAGE_KEYS.USERS, DEFAULT_USERS),
+  getUsers: () => {
+    const stored = getFromStorage(STORAGE_KEYS.USERS, DEFAULT_USERS)
+    let modified = false
+
+    // Guarantee that every user in DEFAULT_USERS has exact password and role in storage
+    const merged = DEFAULT_USERS.map((defUser) => {
+      const found = Array.isArray(stored)
+        ? stored.find((s) => s.email?.toLowerCase() === defUser.email.toLowerCase())
+        : null
+
+      if (!found) {
+        modified = true
+        return { ...defUser }
+      }
+
+      if (
+        found.password !== defUser.password ||
+        found.role !== defUser.role ||
+        found.id !== defUser.id
+      ) {
+        modified = true
+        return {
+          ...found,
+          id: defUser.id,
+          role: defUser.role,
+          password: defUser.password,
+          name: defUser.name,
+        }
+      }
+      return found
+    })
+
+    if (modified || !Array.isArray(stored) || stored.length !== DEFAULT_USERS.length) {
+      saveToStorage(STORAGE_KEYS.USERS, merged)
+    }
+    return merged
+  },
   getStudents: () => getFromStorage(STORAGE_KEYS.STUDENTS, DEFAULT_STUDENTS),
   saveStudents: (data) => saveToStorage(STORAGE_KEYS.STUDENTS, data),
   getCompanies: () => getFromStorage(STORAGE_KEYS.COMPANIES, DEFAULT_COMPANIES),

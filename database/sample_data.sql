@@ -1,17 +1,18 @@
 -- Exact Production Dataset matching MySQL Workbench
 
--- 1. Users
+-- 1. Users (Total 10 Authorized Accounts)
 INSERT INTO users (id, name, email, password, role) VALUES
-(1, 'Chakri', 'chakri@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'ADMIN'),
-(2, 'Harsha', 'harsha@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'COMPANY'),
-(3, 'Sai Charan', 'saicharan@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'COMPANY'),
-(4, 'Indra', 'indra@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'COMPANY'),
-(5, 'Rishitha', 'rishitha@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'STUDENT'),
-(6, 'Nitya', 'nitya@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'STUDENT'),
-(7, 'Bhargav', 'bhargav@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'STUDENT'),
-(8, 'Srujan', 'srujan@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'STUDENT'),
-(9, 'Anurag', 'anurag@gmail.com', '$2a$10$7Q9hM4d7O5f9N4W7w/Oq..E1K2fP3d4v5a6b7c8d9e0f1g2h3i4j', 'STUDENT')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+(1, 'Chakri (Admin)', 'chakri@gmail.com', '$2a$10$pjLM9HfBOSfuopw3Ccr.QOf1Kifl6ngfB80C94vWocb6pz46H3.6e', 'ADMIN'),
+(2, 'Harsha', 'harsha@gmail.com', '$2a$10$CoM8de40Sf9x2qWhY.yonO7xLKobDr/ubsGL.BBL5Y51CqQYm.da6', 'COMPANY'),
+(3, 'Sai Charan', 'saicharan@gmail.com', '$2a$10$uEVawHy37beegIbYVK0WHOcyfa8QVvS3yGizqrObiNO1GeyCVQx9G', 'COMPANY'),
+(4, 'Indra', 'indra@gmail.com', '$2a$10$i6dYPYYixpqvAZ597go8ouwIkASvW8uJqn.VBNWzyUAT5ZvYy3KG6', 'COMPANY'),
+(5, 'Rishitha', 'rishitha@gmail.com', '$2a$10$7UkRmszFEXWEwuVXHOCglOjhe5AP.q/XGXBlBNgLJI3SwlRepgFU2', 'STUDENT'),
+(6, 'Nitya', 'nitya@gmail.com', '$2a$10$CkaBGJyO7hSMxzu5YHawE.3mVotin8jQqc9W7mx/NyihOpZU/NMMe', 'STUDENT'),
+(7, 'Bhargav', 'bhargav@gmail.com', '$2a$10$F0/52ZPykuG5MiaI2nJ51O9SW6baAIJmEjqpVsRzIFaY6XQOMut9W', 'STUDENT'),
+(8, 'Srujan', 'srujan@gmail.com', '$2a$10$VWCafsKRkunSmmwd3uBuQuvEUPX9RT2tbiaf/eRQrROS4TJKkZIyq', 'STUDENT'),
+(9, 'Anurag', 'anurag@gmail.com', '$2a$10$./Mzpoh/SkevO7y.YqBuV.SFXTL0FpvFCYEd1kANbmzTqKZzTMbY6', 'STUDENT'),
+(10, 'Chakri (Admin)', 'kcr1606137@gmail.com', '$2a$10$pjLM9HfBOSfuopw3Ccr.QOf1Kifl6ngfB80C94vWocb6pz46H3.6e', 'ADMIN')
+ON DUPLICATE KEY UPDATE name=VALUES(name), password=VALUES(password), role=VALUES(role);
 
 -- 2. Students
 INSERT INTO students (id, user_id, college, degree, branch, graduation_year, cgpa, phone, resume_url) VALUES

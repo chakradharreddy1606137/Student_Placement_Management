@@ -14,17 +14,32 @@ function Login({ role }) {
     setError('')
     setLoading(true)
 
+    const trimmedEmail = email.trim()
+    const trimmedPassword = password.trim()
+
+    if (!trimmedEmail) {
+      setError('Email address is required.')
+      setLoading(false)
+      return
+    }
+    if (!trimmedPassword) {
+      setError('Password is required.')
+      setLoading(false)
+      return
+    }
+
     try {
       const response = await axiosInstance.post('/api/auth/login', {
-        email,
-        password,
+        email: trimmedEmail,
+        password: trimmedPassword,
+        requestedRole: role,
       })
 
       const user = response.data
 
-      // Validate role match if role prop is passed
+      // Strictly validate role match if role prop is passed
       if (role && user.role.toUpperCase() !== role.toUpperCase()) {
-        setError(`Access Denied: This login page is only for ${role}s. Your role is ${user.role}.`)
+        setError(`Access Denied: This portal is strictly restricted to ${role} accounts only. Your account role is ${user.role}.`)
         setLoading(false)
         return
       }
@@ -53,7 +68,7 @@ function Login({ role }) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message)
       } else {
-        setError('Invalid email or password. Please try again.')
+        setError('Invalid email or password. Access is restricted to authorized accounts only.')
       }
     } finally {
       setLoading(false)
@@ -201,7 +216,6 @@ function Login({ role }) {
           </button>
         </form>
 
-        {/* Demo Quick Fill for Live GitHub Pages Visitors */}
         <div style={{ textAlign: 'center', marginTop: '24px' }}>
           <Link
             to="/"

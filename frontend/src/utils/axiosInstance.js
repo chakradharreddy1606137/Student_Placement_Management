@@ -70,46 +70,69 @@ function handleMockRequest(config) {
 
   // 1. Auth Login
   if (cleanUrl.includes('/api/auth/login') && method === 'post') {
-    const emailLower = (data?.email || '').toLowerCase()
-    let assignedRole = 'STUDENT'
-    if (
-      emailLower.includes('company') ||
-      emailLower.includes('recruiter') ||
-      emailLower.includes('microsoft') ||
-      emailLower.includes('perficient') ||
-      emailLower.includes('accenture') ||
-      emailLower.includes('harsha') ||
-      emailLower.includes('saicharan') ||
-      emailLower.includes('indra')
-    ) {
-      assignedRole = 'COMPANY'
-    } else if (
-      emailLower.includes('admin') ||
-      emailLower.includes('kcr1606137') ||
-      emailLower.includes('chakri') ||
-      emailLower.includes('officer')
-    ) {
-      assignedRole = 'ADMIN'
-    }
+    const emailLower = (data?.email || '').trim().toLowerCase()
+    const passwordInput = (data?.password || '').trim()
 
     const users = MockStore.getUsers()
-    const foundUser =
-      users.find((u) => u.email.toLowerCase() === emailLower) || {
-        id: Date.now(),
-        name: data?.email?.split('@')[0] || 'User',
-        email: data?.email,
-        role: assignedRole,
-        token: `demo-token-${Date.now()}`,
+    const foundUser = users.find((u) => u.email.toLowerCase() === emailLower)
+
+    if (!foundUser) {
+      const err = new Error('Invalid email or password. Access is restricted to registered accounts only.')
+      err.response = {
+        status: 401,
+        data: { message: 'Invalid email or password. Access is restricted to authorized accounts only.' },
       }
-    return { data: foundUser, status: 200 }
+      throw err
+    }
+
+    // Strictly enforce password requirement and exact match against user's own password
+    if (!passwordInput || !foundUser.password || foundUser.password !== passwordInput) {
+      const err = new Error('Invalid email or password.')
+      err.response = {
+        status: 401,
+        data: { message: 'Invalid email or password. Please verify your credentials.' },
+      }
+      throw err
+    }
+
+    // Strictly enforce portal role restriction if requestedRole is provided
+    const requestedRole = (data?.role || data?.requestedRole || '').trim().toUpperCase()
+    if (requestedRole && foundUser.role.toUpperCase() !== requestedRole) {
+      const err = new Error(`Access Denied: This portal is strictly restricted to ${requestedRole} accounts only.`)
+      err.response = {
+        status: 403,
+        data: {
+          message: `Access Denied: This portal is strictly restricted to ${requestedRole} accounts only. Your account role is ${foundUser.role}.`,
+        },
+      }
+      throw err
+    }
+
+    return {
+      data: {
+        id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
+        role: foundUser.role,
+        token: foundUser.token || `demo-token-${foundUser.id}`,
+      },
+      status: 200,
+    }
   }
 
   // 2. Student Endpoints
   if ((cleanUrl === '/api/students/me' || cleanUrl.startsWith('/api/students/me')) && method === 'get') {
     const students = MockStore.getStudents()
-    const student =
-      students.find((s) => s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() || s.userId === currentUser?.id) ||
-      students[0]
+    const student = students.find(
+      (s) =>
+        s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
+        s.userId === currentUser?.id
+    )
+    if (!student) {
+      const err = new Error('Student profile not found.')
+      err.response = { status: 404, data: { message: 'Student profile not found. Please log in with a valid student account.' } }
+      throw err
+    }
     return { data: student, status: 200 }
   }
 
@@ -127,9 +150,16 @@ function handleMockRequest(config) {
   // 3. Company Endpoints
   if ((cleanUrl === '/api/companies/me' || cleanUrl.startsWith('/api/companies/me')) && method === 'get') {
     const companies = MockStore.getCompanies()
-    const company =
-      companies.find((c) => c.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() || c.userId === currentUser?.id) ||
-      companies[0]
+    const company = companies.find(
+      (c) =>
+        c.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
+        c.userId === currentUser?.id
+    )
+    if (!company) {
+      const err = new Error('Company profile not found.')
+      err.response = { status: 404, data: { message: 'Company profile not found. Please log in with a valid company account.' } }
+      throw err
+    }
     return { data: company, status: 200 }
   }
 
@@ -166,7 +196,12 @@ function handleMockRequest(config) {
 
   if (cleanUrl.startsWith('/api/jobs/') && !cleanUrl.includes('/applications') && method === 'get') {
     const id = parseInt(cleanUrl.split('/api/jobs/')[1], 10)
-    const job = MockStore.getJobs().find((j) => j.id === id) || MockStore.getJobs()[0]
+    const job = MockStore.getJobs().find((j) => j.id === id)
+    if (!job) {
+      const err = new Error('Job not found')
+      err.response = { status: 404, data: { message: 'Job not found' } }
+      throw err
+    }
     return { data: job, status: 200 }
   }
 
@@ -201,13 +236,16 @@ function handleMockRequest(config) {
   // 5. Application Endpoints
   if ((cleanUrl === '/api/applications/my' || cleanUrl.startsWith('/api/applications/my')) && method === 'get') {
     const apps = MockStore.getApplications()
-    const currentStudent =
-      MockStore.getStudents().find(
-        (s) =>
-          s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
-          s.userId === currentUser?.id ||
-          s.user?.name?.toLowerCase() === currentUser?.name?.toLowerCase()
-      ) || MockStore.getStudents()[0]
+    const currentStudent = MockStore.getStudents().find(
+      (s) =>
+        s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
+        s.userId === currentUser?.id ||
+        s.user?.name?.toLowerCase() === currentUser?.name?.toLowerCase()
+    )
+
+    if (!currentStudent) {
+      return { data: [], status: 200 }
+    }
 
     const myApps = apps.filter(
       (a) =>
@@ -225,14 +263,35 @@ function handleMockRequest(config) {
   if ((cleanUrl === '/api/applications' || cleanUrl === '/api/applications/') && method === 'post') {
     const apps = MockStore.getApplications()
     const jobId = data.jobId || data.job_id || data.job?.id
-    const job = MockStore.getJobs().find((j) => j.id === jobId) || MockStore.getJobs()[0]
-    const currentStudent =
-      MockStore.getStudents().find(
-        (s) =>
-          s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
-          s.userId === currentUser?.id ||
-          s.user?.name?.toLowerCase() === currentUser?.name?.toLowerCase()
-      ) || MockStore.getStudents()[0]
+    const job = MockStore.getJobs().find((j) => j.id === jobId)
+    if (!job) {
+      const err = new Error('Job not found')
+      err.response = { status: 404, data: { message: 'Job not found' } }
+      throw err
+    }
+
+    const currentStudent = MockStore.getStudents().find(
+      (s) =>
+        s.user?.email?.toLowerCase() === currentUser?.email?.toLowerCase() ||
+        s.userId === currentUser?.id ||
+        s.user?.name?.toLowerCase() === currentUser?.name?.toLowerCase()
+    )
+
+    if (!currentStudent) {
+      const err = new Error('Only registered students can apply for jobs.')
+      err.response = { status: 403, data: { message: 'Only registered students can apply for jobs.' } }
+      throw err
+    }
+
+    // Check CGPA eligibility
+    if (job.minimumCgpa && currentStudent.cgpa < job.minimumCgpa) {
+      const err = new Error(`CGPA requirement not met (Requires: ${job.minimumCgpa}, Your CGPA: ${currentStudent.cgpa})`)
+      err.response = {
+        status: 400,
+        data: { message: `CGPA requirement not met (Requires: ${job.minimumCgpa}, Your CGPA: ${currentStudent.cgpa})` },
+      }
+      throw err
+    }
 
     // Prevent duplicate application to same job
     const alreadyApplied = apps.some(
@@ -242,10 +301,12 @@ function handleMockRequest(config) {
     )
 
     if (alreadyApplied) {
-      return {
-        data: { message: 'You have already applied for this position.' },
+      const err = new Error('You have already applied for this position.')
+      err.response = {
         status: 400,
+        data: { message: 'You have already applied for this position.' },
       }
+      throw err
     }
 
     const newApp = {
@@ -282,30 +343,67 @@ function handleMockRequest(config) {
     return { data: { message: 'Application deleted successfully' }, status: 200 }
   }
 
+  if (cleanUrl.startsWith('/api/jobs/') && (method === 'put' || method === 'patch')) {
+    const id = parseInt(cleanUrl.split('/api/jobs/')[1], 10)
+    const jobs = MockStore.getJobs()
+    const jobIdx = jobs.findIndex((j) => j.id === id)
+    if (jobIdx >= 0) {
+      jobs[jobIdx] = { ...jobs[jobIdx], ...data }
+      MockStore.saveJobs(jobs)
+      return { data: jobs[jobIdx], status: 200 }
+    }
+    return { data: { message: 'Job updated' }, status: 200 }
+  }
+
+  // 6. User Endpoints
+  if ((cleanUrl === '/api/users' || cleanUrl === '/api/users/') && method === 'get') {
+    return { data: MockStore.getUsers(), status: 200 }
+  }
+
+  if (cleanUrl.startsWith('/api/users/') && method === 'delete') {
+    const id = parseInt(cleanUrl.split('/api/users/')[1], 10)
+    const users = MockStore.getUsers().filter((u) => u.id !== id)
+    MockStore.saveUsers(users)
+    return { data: { message: 'User deleted successfully' }, status: 200 }
+  }
+
   return { data: [], status: 200 }
 }
 
-// Interceptor: Fallback to interactive MockStore if real backend is unreachable or not configured
+// Interceptor: Fallback to interactive MockStore only if real backend is unreachable
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If backend is not available (network error, CORS, 401/403/404, or refused connection)
+    // If token is expired / 401 Unauthorized on a protected endpoint, clear session and redirect
+    if (error.response && error.response.status === 401 && !error.config?.url?.includes('/api/auth/login')) {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      localStorage.removeItem('role')
+      if (typeof window !== 'undefined' && !window.location.hash.includes('/login')) {
+        window.location.href = '#/'
+      }
+      return Promise.reject(error)
+    }
+
+    // If backend returned explicit HTTP 400, 401 (login), or 403 auth/business errors, propagate directly to UI
+    if (error.response && (error.response.status === 400 || error.response.status === 401 || error.response.status === 403)) {
+      return Promise.reject(error)
+    }
+
+    // Only fallback to interactive MockStore if backend is offline/network error/unreachable (e.g. GitHub Pages)
     if (
       !getActiveApiUrl() ||
       error.code === 'ERR_NETWORK' ||
       error.code === 'ECONNABORTED' ||
       !error.response ||
-      error.response.status === 401 ||
-      error.response.status === 403 ||
       error.response.status === 404 ||
       error.response.status >= 500
     ) {
-      console.warn('Backend unavailable or credentials mismatched. Activating interactive Demo Mode fallback.')
       try {
         const mockResponse = handleMockRequest(error.config)
         return Promise.resolve(mockResponse)
       } catch (mockErr) {
-        console.error('Mock handler error', mockErr)
+        return Promise.reject(mockErr)
       }
     }
     return Promise.reject(error)

@@ -68,6 +68,8 @@ public class SecurityConfig {
                 // Company endpoints
                 .requestMatchers(HttpMethod.GET, "/api/companies/me").hasRole("COMPANY")
                 .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasAnyRole("COMPANY", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasAnyRole("COMPANY", "ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/api/jobs/**").hasAnyRole("COMPANY", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasAnyRole("COMPANY", "ADMIN")
                 .requestMatchers("/api/companies/**").hasRole("ADMIN")
 

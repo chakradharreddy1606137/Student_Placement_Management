@@ -27,11 +27,19 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        logger.debug("AuthService: login attempt for email {}", request.getEmail());
+        if (request == null || request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
 
-        User user = userRepository.findByEmail(request.getEmail())
+        String email = request.getEmail().trim();
+        logger.debug("AuthService: login attempt for email {}", email);
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    logger.warn("User not found for email {}", request.getEmail());
+                    logger.warn("User not found for email {}", email);
                     return new RuntimeException("Invalid email or password");
                 });
         logger.debug("User found with ID {} and role {}", user.getId(), user.getRole());

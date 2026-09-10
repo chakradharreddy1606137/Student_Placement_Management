@@ -129,13 +129,22 @@ Authentication is handled via **JWT (JSON Web Tokens)**, with every API endpoint
 
 ---
 
-## User Roles
+## User Roles & Authorized Credentials (10 Accounts)
 
-| Role | Description | Login Path |
-|------|-------------|------------|
-| `STUDENT` | Can apply for jobs, view own profile and applications | `/login/student` |
-| `COMPANY` | Can post jobs, manage own applicants | `/login/company` |
-| `ADMIN` | Full system access and management | `/login/admin` |
+| Role | Name | Email | Password | Login Portal | Affiliation / Details |
+|------|------|-------|----------|--------------|-----------------------|
+| `ADMIN` | Chakri (Admin) | `chakri@gmail.com` | `chakri123` | `/login/admin` | System Administrator |
+| `ADMIN` | Chakri (Admin) | `kcr1606137@gmail.com` | `chakri123` | `/login/admin` | System Administrator |
+| `COMPANY` | Harsha | `harsha@gmail.com` | `harsha123` | `/login/company` | Microsoft (Hyderabad) |
+| `COMPANY` | Sai Charan | `saicharan@gmail.com` | `saicharan123` | `/login/company` | Perficient (Nagpur) |
+| `COMPANY` | Indra | `indra@gmail.com` | `indra123` | `/login/company` | Accenture (Bangalore) |
+| `STUDENT` | Nitya | `nitya@gmail.com` | `nitya123` | `/login/student` | VNIT Nagpur (B.Tech CSE) |
+| `STUDENT` | Srujan | `srujan@gmail.com` | `srujan123` | `/login/student` | NIT Trichy (B.Tech ECE) |
+| `STUDENT` | Bhargav | `bhargav@gmail.com` | `bhargav123` | `/login/student` | NIT Surat (B.Tech ECE) |
+| `STUDENT` | Anurag | `anurag@gmail.com` | `anurag123` | `/login/student` | NIT Warangal (B.Tech CSE) |
+| `STUDENT` | Rishitha | `rishitha@gmail.com` | `rishitha123` | `/login/student` | VNIT Nagpur (B.Tech CSE) |
+
+> 🛡️ **Access Restriction**: Only these 10 registered accounts can log in with their respective original passwords. All other emails or cross-portal login attempts are strictly blocked.
 
 ---
 

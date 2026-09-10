@@ -36,19 +36,30 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.findByEmail("chakri@gmail.com").isPresent()) {
+        // 1. ADMINS (Chakri)
+        if (userRepository.findByEmail("chakri@gmail.com").isEmpty()) {
+            User admin = new User();
+            admin.setName("Chakri (Admin)");
+            admin.setEmail("chakri@gmail.com");
+            admin.setPassword(passwordEncoder.encode("chakri123"));
+            admin.setRole("ADMIN");
+            userRepository.save(admin);
+        }
+
+        if (userRepository.findByEmail("kcr1606137@gmail.com").isEmpty()) {
+            User admin2 = new User();
+            admin2.setName("Chakri (Admin)");
+            admin2.setEmail("kcr1606137@gmail.com");
+            admin2.setPassword(passwordEncoder.encode("chakri123"));
+            admin2.setRole("ADMIN");
+            userRepository.save(admin2);
+        }
+
+        if (companyRepository.findByUserEmail("harsha@gmail.com").isPresent()) {
             return; // Already initialized with main dataset
         }
 
         System.out.println("[DataSeeder] Initializing MySQL database with primary placement dataset...");
-
-        // 1. ADMIN (Chakri)
-        User admin = new User();
-        admin.setName("Chakri (Admin)");
-        admin.setEmail("chakri@gmail.com");
-        admin.setPassword(passwordEncoder.encode("chakri123"));
-        admin.setRole("ADMIN");
-        userRepository.save(admin);
 
         // 2. COMPANY RECRUITERS (Harsha, Sai Charan, Indra)
         User harshaUser = new User();
